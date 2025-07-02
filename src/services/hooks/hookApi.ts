@@ -16,16 +16,23 @@ const usePostAPI = (action: ActionPostType) => {
 
         if (res.status === 200) {
           return res;
+        } else {
+          setError(res?.data?.message || "Lỗi không xác định");
+          return undefined;
         }
-        return undefined;
-      } catch (error: any) {
-        console.log("error", error);
+      } catch (err: any) {
+        console.log("Post API error:", err);
+        setError(
+          err?.response?.data?.detail || err.message || "Lỗi không xác định"
+        );
+        throw err;
       } finally {
         setLoading(false);
       }
     },
     [action]
   );
+
   return {
     loading,
     post,

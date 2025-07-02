@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
     Drawer,
@@ -36,22 +36,22 @@ export default function Sidebar() {
     const pathname = usePathname();
     const router = useRouter();
 
-const [user, setUser] = useState<any>(null);
-  const isLogin = useStore((state: any) => state.isLogin);
-  const setIsLogin = useStore((state: any) => state.setIsLogin);
-  
+    const [user, setUser] = useState<any>(null);
+    const isLogin = useStore((state: any) => state.isLogin);
+    const setIsLogin = useStore((state: any) => state.setIsLogin);
 
 
-  const handleLogout = async () => {
-    try {
-      localStorage.removeItem("access_token");
-      setUser(null);
-      setIsLogin(false)
-      router.push("/user/home");
-    } catch (err) {
-      console.error("Logout failed", err);
-    }
-  };
+
+    const handleLogout = async () => {
+        try {
+            localStorage.removeItem("access_token");
+            setUser(null);
+            setIsLogin(false)
+            router.push("/user/home");
+        } catch (err) {
+            console.error("Logout failed", err);
+        }
+    };
 
     return (
         <Drawer
@@ -90,13 +90,13 @@ const [user, setUser] = useState<any>(null);
                 }}>
                     <Box sx={{ color: "white", display: "flex" }}>
                         <AccountCircleIcon sx={{ fontSize: "2rem", marginRight: "5px" }} />
-                        <Box sx={{gap:4}}>
+                        <Box sx={{ gap: 4 }}>
                             {/* thay */}
                             <Typography sx={{ fontSize: "76.25%" }}>admin@vanlanguni.vn</Typography>
-                            <Typography sx={{ fontSize: "76.25%", color:"#D46B36" }}>VLU@2025</Typography>
+                            <Typography sx={{ fontSize: "76.25%", color: "#D46B36" }}>VLU@2025</Typography>
                         </Box>
                     </Box>
-                   <div className='hover:cursor-pointer' onClick={handleLogout}><LogoutIcon sx={{ color: "white", fontSize: "1.5rem" }} /></div>
+                    <div className='hover:cursor-pointer' onClick={handleLogout}><LogoutIcon sx={{ color: "white", fontSize: "1.5rem" }} /></div>
                 </Box>
             </Box>
 

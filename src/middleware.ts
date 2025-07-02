@@ -1,15 +1,16 @@
+// middleware.ts
 import { NextRequest, NextResponse } from "next/server";
 
 export function middleware(request: NextRequest) {
   const token = request.cookies.get("access_token")?.value;
 
   if (!token) {
-    return NextResponse.redirect(new URL("/login", request.url));
+    return NextResponse.redirect(new URL("/user/home", request.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/admin/:path*"], // chỉ áp dụng middleware cho các route /admin/*
+  matcher: ["/admin/:path*"],
 };

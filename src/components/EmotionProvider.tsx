@@ -8,7 +8,7 @@ import { ToastContainer } from 'react-toastify';
 
 const clientSideEmotionCache = createEmotionCache();
 
-const theme = createTheme(); 
+const theme = createTheme();
 
 export default function EmotionProvider({ children }: { children: ReactNode }) {
     return (

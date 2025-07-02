@@ -1,58 +1,7 @@
-// "use client";
-// import { useEffect, useState } from "react";
-// import { api } from "@/src/lib/axios";
-// import { useRouter } from "next/navigation";
-// import { toast } from "react-toastify";
-// import { Container, Typography, Button, Box } from "@mui/material";
-
-// export default function ProfilePage() {
-//   const [user, setUser] = useState<any>(null);
-//   const router = useRouter();
-
-//   // useEffect(() => {
-//   //   api.get("/auth/me")
-//   //     .then((res) => setUser(res.data))
-//   //     .catch(() => {
-//   //       toast.error("Vui lòng đăng nhập lại");
-//   //       router.push("/login");
-//   //     });
-//   // }, []);
-
-//   useEffect(() => {
-//   api.get("/users/protected")
-//     .then((res) => setUser(res.data))
-//     .catch(() => {
-//       toast.error("Vui lòng đăng nhập lại");
-//       router.push("/login");
-//     });
-//   }, []);
-
-//   const handleLogout = async () => {
-//     await api.post("/auth/logout");
-//     toast.success("Đã đăng xuất");
-//     router.push("/login");
-//   };
-
-//   if (!user) return null;
-
-//   return (
-//     <Container maxWidth="sm" sx={{ mt: 8 }}>
-//       <Typography variant="h5">Xin chào, {user.name}</Typography>
-//       <Typography>Email: {user.email}</Typography>
-//       <Typography>Vai trò: {user.role}</Typography>
-//       <Box mt={2}>
-//         <Button variant="contained" color="error" onClick={handleLogout}>
-//           Đăng xuất
-//         </Button>
-//       </Box>
-//     </Container>
-//   );
-// }
-
 "use client";
 
 import { useEffect, useState } from "react";
-import { api } from "@/src/lib/axios";
+//import { api } from "@/src/lib/axios";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import { Container, Typography, Button, Box, CircularProgress } from "@mui/material";
@@ -69,7 +18,7 @@ export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
-  
+
   // Kiểm tra token và lấy thông tin user
   useEffect(() => {
     const fetchUser = async () => {
@@ -109,7 +58,7 @@ export default function ProfilePage() {
   return (
     <Container maxWidth="sm" sx={{ mt: 8 }}>
       <Typography variant="h5" gutterBottom>
-         Xin chào, {user.full_name || "Người dùng"}
+        Xin chào, {user.full_name || "Người dùng"}
       </Typography>
       <Typography>Email: {user.email}</Typography>
       <Typography>Vai trò: {user.role}</Typography>

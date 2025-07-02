@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import Cookies from "js-cookie";
-
 import { removeItemLocalStorage } from "../helper";
-import { ROLE_VALUE, USER_NAME } from "@/src/config/const";
+import { USER_NAME, ROLE_VALUE } from "@/src/config/const";
 
 const timeOut = 600_000; // 10 minutes
 
@@ -68,11 +68,9 @@ export const restTransport = () => {
         Cookies.remove("refresh_token");
         removeItemLocalStorage(USER_NAME);
         removeItemLocalStorage(ROLE_VALUE);
-
-        window.location.href = "/login";
       }
 
-      return Promise.reject(error);
+      return Promise.reject(error); // giao cho component xử lý
     }
   );
 

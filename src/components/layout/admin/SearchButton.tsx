@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import { InputBase, styled } from "@mui/material";
 import SearchIcon from '@mui/icons-material/Search';

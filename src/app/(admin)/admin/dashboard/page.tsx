@@ -1,18 +1,24 @@
 "use client";
 
-import { useUser } from "@/src/components/store/useUser";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "react-toastify";
+import Cookies from "js-cookie";
+import { useUser } from "@/src/components/store/useUser";
+import { ROLE_VALUE } from "@/src/config/const";
 
 export default function AdminDashboard() {
   const router = useRouter();
   const { user, loading } = useUser();
 
   useEffect(() => {
-    // Nếu cần xử lý logic gì đó khi user thay đổi, thì xử lý ở đây
-    // Ví dụ: chỉ fetch thêm dữ liệu, hoặc log ra user info
-    console.log("Current user:", user);
-  }, [user]);
+    const role = Cookies.get(ROLE_VALUE);
+    console.log("nè", role)
+    if (role !== "admin") {
+      toast.error("Bạn cần quyền admin để truy cập");
+      router.push("/login");
+    }
+  }, [router]);
 
   if (loading) {
     return <p>Đang tải thông tin người dùng...</p>;

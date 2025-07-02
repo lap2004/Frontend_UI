@@ -1,6 +1,5 @@
-"use client"
+"use client";
 import React, { useState } from "react";
-import Header from "@/src/components/Header";
 import {
   Box,
   Typography,
@@ -12,7 +11,8 @@ import {
   ButtonGroup,
 } from "@mui/material";
 import { toast } from "react-toastify";
-import { api } from "@/src/lib/axios";
+import Header from "@/src/components/Header";
+
 
 const AdminDatabasePage = () => {
   const [jsonType, setJsonType] = useState<"admissions" | "students" | "">("");

@@ -1,5 +1,5 @@
-import { ChangePassword, checkExistAccount, CreateAccount, userLogin, userMe } from "../apis/auth";
-import { usePostAPI, useGetAPI, usePutAPI } from "./hookApi";
+import { Protected, userLogin, userMe } from "../apis/auth";
+import { useGetAPI, usePostAPI } from "./hookApi";
 
 const useUserLogin = () => {
   const {
@@ -17,12 +17,7 @@ const useUserLogin = () => {
 };
 
 const useUserMe = () => {
-  const {
-    loading,
-    get: getuserMe,
-    error,
-    setError,
-  } = useGetAPI(userMe);
+  const { loading, get: getuserMe, error, setError } = useGetAPI(userMe);
   return {
     loading,
     getuserMe,
@@ -31,49 +26,19 @@ const useUserMe = () => {
   };
 };
 
-const useUserCheckExistAccount = () => {
+const useProtectedProtected = () => {
   const {
     loading,
-    post: postUserCheckExistAccount,
+    get: postProtectedProtected,
     error,
     setError,
-  } = usePostAPI(checkExistAccount);
+  } = useGetAPI(Protected);
   return {
     loading,
-    postUserCheckExistAccount,
+    postProtectedProtected,
     error,
     setError,
   };
 };
 
-const useUserCreateAccount = () => {
-  const {
-    loading,
-    post: postUserCreateAccount,
-    error,
-    setError,
-  } = usePostAPI(CreateAccount);
-  return {
-    loading,
-    postUserCreateAccount,
-    error,
-    setError,
-  };
-};
-
-const useUserChangePassword = () => {
-  const {
-    loading,
-    put: putUserChangePassword,
-    error,
-    setError,
-  } = usePutAPI(ChangePassword);
-  return {
-    loading,
-    putUserChangePassword,
-    error,
-    setError,
-  };
-};
-
-export { useUserLogin, useUserMe, useUserCheckExistAccount, useUserCreateAccount, useUserChangePassword };
+export { useProtectedProtected, useUserLogin, useUserMe };

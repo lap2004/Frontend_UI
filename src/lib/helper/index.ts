@@ -1,9 +1,16 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+
+import { ROLE_VALUE } from "@/src/config/const";
 import Cookies from "js-cookie";
 
 // -------------------------Check login------------------------------------
-export const isLogin = () => {
-  const token = Cookies.get("access_token");
-  return !!token;
+
+export const isLogin = (): boolean => {
+  return !!Cookies.get("access_token"); // luôn đọc realtime từ cookies
+};
+
+export const getUserRole = (): string | undefined => {
+  return Cookies.get(ROLE_VALUE);
 };
 
 // -----------------Get/set/remove item localstorage-----------------------

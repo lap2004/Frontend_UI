@@ -1,6 +1,8 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import AttachFileIcon from "@mui/icons-material/AttachFile";
+import CancelIcon from "@mui/icons-material/Cancel";
+import SendIcon from "@mui/icons-material/Send";
 import {
   Box,
   Button,
@@ -13,14 +15,11 @@ import {
   motion,
 } from "framer-motion";
 import Image from "next/image";
-import SendIcon from "@mui/icons-material/Send";
-import CancelIcon from "@mui/icons-material/Cancel";
-import AttachFileIcon from "@mui/icons-material/AttachFile";
+import React, { useEffect, useRef, useState } from "react";
 
-import PersonIcon from "@mui/icons-material/Person";
+import { getUserRole } from "@/src/lib/helper";
+import { useChatAdmin, useChatStudent } from "@/src/services/hooks/hookChat";
 import LoadingDots from "../LoadingDot";
-
-import { api } from "@/src/lib/axios";
 
 type Message = {
   text: string;
@@ -39,6 +38,9 @@ const Chat = () => {
   const [loading, setLoading] = useState(false);
   const [inputText, setInputText] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+  const { postChatStudent } = useChatStudent();
+  const { postChatAdmin } = useChatAdmin();
+
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -55,15 +57,14 @@ const Chat = () => {
     setLoading(true);
 
     try {
-      // Gửi câu hỏi đến backend
-      // Giả sử user_type là "student" hoặc "guest"
-      const userType = "student";// đổi lại user // Hoặc lấy từ context/user state nếu có phân quyền
+      const role = getUserRole();
+      let res;
 
-      const res = await api.post("/chat/admission", {
-        question: trimmed,
-        // Nếu backend cần thêm trường role/user_type, gửi ở đây
-        // user_type: userType,
-      });
+      if (role === "admin") {
+        res = await postChatAdmin({ question: trimmed });
+      } else {
+        res = await postChatStudent({ question: trimmed });
+      }
 
       setChatMessages((prev) => [
         ...prev,
@@ -73,7 +74,7 @@ const Chat = () => {
       console.error("Lỗi gửi tin nhắn:", error);
       setChatMessages((prev) => [
         ...prev,
-        { text: "⚠️ Lỗi khi gửi tin nhắn.", sender: "bot" },
+        { text: "Lỗi khi gửi tin nhắn.", sender: "bot" },
       ]);
     } finally {
       setLoading(false);
@@ -169,13 +170,13 @@ const Chat = () => {
                             whiteSpace: "pre-wrap",
                             wordBreak: "break-word",
 
-                            backdropFilter: 'blur(10px)',            
-                            WebkitBackdropFilter: 'blur(10px)',         
-                            border: '1px solid rgba(255, 255, 255, 0.3)', 
+                            backdropFilter: 'blur(10px)',
+                            WebkitBackdropFilter: 'blur(10px)',
+                            border: '1px solid rgba(255, 255, 255, 0.3)',
                           }}
                         >
                           <Box>
-                          <Typography color={"#EAEAEA"}>You</Typography>
+                            <Typography color={"#EAEAEA"}>You</Typography>
                             <Typography>{msg.text}</Typography>
                           </Box>
                         </Box>
@@ -192,9 +193,9 @@ const Chat = () => {
                             whiteSpace: "pre-wrap",
                             wordBreak: "break-word",
 
-                            backdropFilter: 'blur(10px)',            
-                            WebkitBackdropFilter: 'blur(10px)',         
-                            border: '1px solid rgba(255, 255, 255, 0.3)',  
+                            backdropFilter: 'blur(10px)',
+                            WebkitBackdropFilter: 'blur(10px)',
+                            border: '1px solid rgba(255, 255, 255, 0.3)',
                           }}
                         >
                           {/* bot */}

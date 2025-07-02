@@ -1,163 +1,4 @@
-// 'use client'
-// import GoogleIcon from "@mui/icons-material/Google";
-// import VisibilityIcon from "@mui/icons-material/Visibility";
-// import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-// import {
-//   Box,
-//   Button,
-//   Checkbox,
-//   Container,
-//   Divider,
-//   FormControlLabel,
-//   Paper,
-//   TextField,
-//   Typography,
-// } from "@mui/material";
 
-// import { motion } from "framer-motion";
-// import { toast } from "react-toastify";
-// import { useRouter } from "next/navigation";
-// import React, { useState } from "react";
-// import { api } from "@/src/lib/axios";
-
-
-// const LoginPage = () => {
-//   const [form, setForm] = useState({ email: '', password: '' });
-//   const [seePassword, setSeePassword] = useState(false);
-
-//   const router = useRouter();
-
-//   // Hàm xử lý đăng nhập
-//   const handleLogin = async (e: React.FormEvent) => {
-//     e.preventDefault();
-//     try {
-//       const res = await api.post('/auth/login', form);
-//       console.log(res)
-//       toast.success(res.data.message)
-//       router.push('/user/home')
-//       // router.push("/profile");
-
-//     } catch (err) {
-//       console.log(err)
-//       toast.error("Đăng nhập thất bại");
-//     }
-//   };
-
-//   return (
-//     <Container maxWidth="xs" sx={{ mt: 8, mb: 4 }}>
-//       <motion.div
-//         initial={{ opacity: 0 }}
-//         animate={{ opacity: 1 }}
-//         transition={{ duration: 1 }}
-//       >
-//         <Paper elevation={3} sx={{ p: 4, mt: 6 }}>
-//           <Typography variant="h5" align="center" fontWeight={600}>
-//             Sign in
-//           </Typography>
-
-//           <Box component="form" sx={{ mt: 3 }}>
-//             <TextField
-      
-//               fullWidth
-//               label="Email"
-//               type="email"
-//               variant="outlined"
-//               margin="normal"
-//               placeholder="nguyenvana@email.com"
-//               onChange={(e) => setForm({ ...form, email: e.target.value })}
-//             />
-//             <Box
-//               sx={{
-//                 position: "relative",
-//                 display: "flex",
-//                 alignItems: "center",
-//                 justifyContent: "center",
-//               }}
-//             >
-//               <TextField
-//                 fullWidth
-//                 label="Password"
-//                 type={seePassword ? "text" : "password"}
-//                 variant="outlined"
-//                 margin="normal"
-//                 placeholder=" "
-//                 onChange={(e) => setForm({...form,password: e.target.value})}
-//               />
-//               <Button
-//                 sx={{ position: "absolute", top: 25, right: 0, color: "grey" }}
-//                 type="button"
-//                 onClick={() => setSeePassword(!seePassword)}
-//               >
-//                 {seePassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
-//               </Button>
-//             </Box>
-
-//             <FormControlLabel
-//               control={
-//                 <Checkbox
-//                 // checked={remember}
-//                 // onChange={(e) => setRemember(e.target.checked)}
-//                 />
-//               }
-//               label="Remember me"
-//               sx={{ mt: 1 }}
-//             />
-
-//             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
-//               <Button
-//                 onClick={handleLogin}
-//                 fullWidth
-//                 type="submit"
-//                 variant="contained"
-//                 sx={{
-//                   mt: 2,
-//                   py: 1.2,
-//                   background: "#c62828",
-//                   ":hover": { background: "#b71c1c" },
-//                 }}
-//               >
-//                 Đăng Nhập
-//               </Button>
-//             </motion.div>
-
-//             <Typography
-//               variant="body2"
-//               align="center"
-//               sx={{ mt: 2, color: "primary.main", cursor: "pointer" }}
-//             >
-//               Forgot your password?
-//             </Typography>
-
-//             <Divider sx={{ my: 3 }}>or</Divider>
-
-//             <Button
-//               variant="outlined"
-//               fullWidth
-//               startIcon={<GoogleIcon />}
-//               sx={{ mb: 2, textTransform: "none" }}
-//             >
-//               Sign in with Google
-//             </Button>
-
-//             <Typography variant="body2" align="center" sx={{ mt: 3 }}>
-//               Do not have an account?{" "}
-//               <Box
-//                 component="span"
-//                 sx={{ color: "primary.main", cursor: "pointer" }}
-//                 onClick={() => router.push("/register")}
-//               >
-//                 Sign up
-//               </Box>
-//             </Typography>
-//           </Box>
-//         </Paper>
-//       </motion.div>
-//     </Container>
-//   );
-// }
-
-
-// export default LoginPage
 "use client";
 
 import GoogleIcon from "@mui/icons-material/Google";
@@ -174,134 +15,56 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import React, { useState } from "react";
-
-import useStore from "@/src/components/store";
-import { setAuthCookies } from "@/src/lib/helper/token";
-import { useUserLogin } from "@/src/services/hooks/hookAuth";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
+import Cookies from "js-cookie";
+import { useUserLogin } from "@/src/services/hooks/hookAuth";
+import { setAuthCookies } from "@/src/lib/helper/token";
+import { getUserRole } from "@/src/lib/helper";
+import { ROLE_VALUE } from "@/src/config/const";
 
 const LoginPage = () => {
-   const { postUserLogin } = useUserLogin();
+  const { postUserLogin } = useUserLogin();
 
   const [form, setForm] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
   const [isloading, setIsLoading] = useState(false);
 
-  const setIsLogin = useStore((state: any) => state.setIsLogin);
-
-  // Handle input changes for form fields
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
-// const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-//   e.preventDefault();
-//   setLoading(true);
 
-//   try {
-//     const res = await api.post("/auth/login", form);
-
-//     // ✅ Lưu token và role vào localStorage
-//     localStorage.setItem("access_token", res.data.access_token);
-//     localStorage.setItem("user_role", res.data.role); // admin hoặc student
-
-//     // ✅ Điều hướng theo role (DÙNG user.role, KHÔNG phải res.data.role)
-//     if (res.data.role === "admin") {
-//       router.push("/admin/dashboard"); // hoặc "/admin/home"
-//     } else {
-//       router.push("/user/home");
-//     }
-//     toast.success("Đăng nhập thành công!");
-//     setIsLogin(true);
-//   } catch (error: any) {
-//     console.error(error);
-//     toast.error(
-//       error.response?.data?.detail || "Đăng nhập thất bại. Vui lòng thử lại."
-//     );
-//   } finally {
-//     setLoading(false);
-//   }
-// };
-   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  setIsLoading(true);
-  try {
-    const res = await postUserLogin({
-      email: form.email,
-      password: form.password,
-    });
-
-    console.log("RES DATA:", res.data);
-
-    // Kiểm tra xem response có token không
-    if (res?.data?.access_token || res?.data?.accessToken) {
-      setAuthCookies(res.data.accessToken, res.data.refreshToken);
-      
-      toast.success("Đăng nhập thành công!");
-      router.push("/user/home");
-
-    } else {
-      toast.error(res.data?.detail || "Đăng nhập thất bại!");
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const res = await postUserLogin({
+        email: form.email,
+        password: form.password,
+      });
+      console.log(res.data)
+      if (res?.data?.access_token) {
+        setAuthCookies(res.data.access_token, res.data.refresh_token);
+        Cookies.set(ROLE_VALUE, res.data.role);
+        const savedRole = getUserRole();
+        toast.success("Đăng nhập thành công!");
+        if (savedRole === "admin") {
+          router.push("/admin/dashboard");
+        } else {
+          router.push("/");
+        }
+      } else {
+        toast.error(res.data?.detail || "Đăng nhập thất bại!");
+      }
+    } catch (err: any) {
+      toast.error(err.response?.data?.detail || "Đăng nhập thất bại!");
+    } finally {
+      setIsLoading(false);
     }
-  } catch (err: any) {
-    toast.error(
-      err.response?.data?.detail || "Đăng nhập thất bại!"
-    );
-  } finally {
-    setIsLoading(false);
-  }
-};
-
-
-// const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-//   e.preventDefault();
-//   setLoading(true);
-
-//   try {
-//     // Gửi form: { email, password }
-//     const res = await api.post("/auth/login", form);
-//     const { access_token } = res.data;
-
-//     // Lưu token
-//     localStorage.setItem("access_token", access_token);
-
-//     // // Gọi /auth/me để lấy role chính xác từ token
-//     // const me = await api.get("/auth/me", {
-//     //   headers: {
-//     //     Authorization: `Bearer ${access_token}`,
-//     //   },
-//     // });
-
-//     // const { role } = me.data;
-
-//     // // Lưu role
-//     // localStorage.setItem("user_role", role);
-
-//     // // Chuyển hướng theo role
-//     // if (role === "admin") {
-//     //   router.push("/admin/dashboard");
-//     // } else {
-//     //   router.push("/user/home");
-//     // }
-
-//     // Cập nhật trạng thái login toàn app (nếu có context hoặc global store)
-//     setIsLogin?.();
-//     toast.success("Đăng nhập thành công!");
-//   } catch (error: any) {
-//     console.error(error);
-//     toast.error(
-//       error?.response?.data?.detail || "Đăng nhập thất bại. Vui lòng thử lại."
-//     );
-//   } finally {
-//     setLoading(false);
-//   }
-// };
-
-
-
+  };
 
   return (
     <Container maxWidth="xs" sx={{ mt: 8, mb: 4 }}>

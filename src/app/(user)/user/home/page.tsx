@@ -1,7 +1,5 @@
 "use client";
 import Chat from "@/src/components/chat/Chat";
-import { api } from "@/src/lib/axios";
-import { useUserMe } from "@/src/services/hooks/hookAuth";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import {
@@ -15,29 +13,20 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+
 import Button from "@mui/material/Button";
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 
-export default function Home() {
+export default function HomePage() {
   const router = useRouter();
-  const { getuserMe } = useUserMe();
+
   const handleClick = () => {
     router.push("/about");
   };
-//  const [role, setRole] = useState<string | null>(null);
-  //  useEffect(() => {
-  //   const fetchRole = async () => {
-  //     const userInfo = await getuserMe({})
-  //     console.log('hehe',userInfo)
-  //   };
 
-  //   fetchRole();
-  // }, []);
-  
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const major = [
@@ -246,7 +235,6 @@ export default function Home() {
             className=" w-120 hover:scale-110 transition-all ease-in-out transition-300 icon "
           ></Image>
         </Box>
-
         <Grid container spacing={3}>
           {major.map((item, index) => (
             <Grid item xs={12} sm={6} md={4} key={index}>
