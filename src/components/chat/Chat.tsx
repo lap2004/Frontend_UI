@@ -1,5 +1,6 @@
 "use client";
 
+import { useChatAdmin, useChatStudent } from "@/src/services/hooks/hookChat";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import CancelIcon from "@mui/icons-material/Cancel";
 import SendIcon from "@mui/icons-material/Send";
@@ -14,11 +15,9 @@ import {
   AnimatePresence,
   motion,
 } from "framer-motion";
+import Cookies from "js-cookie";
 import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
-
-import { getUserRole } from "@/src/lib/helper";
-import { useChatAdmin, useChatStudent } from "@/src/services/hooks/hookChat";
 import LoadingDots from "../LoadingDot";
 
 type Message = {
@@ -57,13 +56,12 @@ const Chat = () => {
     setLoading(true);
 
     try {
-      const role = getUserRole();
       let res;
-
-      if (role === "admin") {
-        res = await postChatAdmin({ question: trimmed });
-      } else {
+      const token = Cookies.get("access_token");
+      if (token) {
         res = await postChatStudent({ question: trimmed });
+      } else {
+        res = await postChatAdmin({ question: trimmed });
       }
 
       setChatMessages((prev) => [
