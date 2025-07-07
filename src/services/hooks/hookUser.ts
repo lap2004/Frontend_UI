@@ -70,5 +70,4 @@ const useDeleteUser = () => {
     setError,
   };
 };
-
 export { useGetAllUser, useCreateUser, useUpdateUser, useDeleteUser };

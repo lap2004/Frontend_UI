@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-//import { api } from "@/src/lib/axios";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import {
@@ -11,20 +10,28 @@ import {
   Typography,
   Box,
 } from "@mui/material";
+import { useUserSignup } from "@/src/services/hooks/hookAuth";
 
 export default function RegisterPage() {
   const [form, setForm] = useState({
     full_name: "",
     email: "",
+    role:"student",
     password: "",
   });
   const router = useRouter();
+  const { postUserSignup } = useUserSignup();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await api.post("/auth/signup", form);
-      toast.success("Đăng ký thành công. Vui lòng kiểm tra email để xác minh.");
+      await postUserSignup({
+          email: form.email,
+          full_name: form.full_name,
+          role: form.role,
+          password: form.password
+      });
+      toast.success("Đăng ký tài khoản thành công.");
       router.push("/login");
     } catch (err: any) {
       console.error(err);

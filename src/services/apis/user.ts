@@ -15,6 +15,7 @@ export const updateUserById = async (body: any) => {
   return await put(`/users/${id}`, data);
 };
 
+
 export const deleteUserById = async ({ id }: { id: string }) => {
   return await _delete(`/users/${id}`);
 };

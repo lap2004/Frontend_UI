@@ -1,6 +1,11 @@
-
 "use client";
-import { useCreateUser, useDeleteUser, useGetAllUser, useUpdateUser } from "@/src/services/hooks/hookUser";
+
+import {
+  useCreateUser,
+  useDeleteUser,
+  useGetAllUser,
+  useUpdateUser,
+} from "@/src/services/hooks/hookUser";
 import { Delete, Edit } from "@mui/icons-material";
 import {
   Box,
@@ -32,24 +37,29 @@ type User = {
   password?: string;
 };
 
-export default function AdminUsersPage() {
+export default function Page() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
+
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editUser, setEditUser] = useState<Partial<User> | null>(null);
 
+  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+  const [passwordUser, setPasswordUser] = useState<User | null>(null);
+  const [newPassword, setNewPassword] = useState("");
   const { getGetAllUser } = useGetAllUser();
-  const { postCreateUser } = useCreateUser();
+  const { postCreateUser } = useCreateUser(); 
   const { putUpdateUser } = useUpdateUser();
   const { deleteUser } = useDeleteUser();
 
   const fetchUsers = async () => {
     setLoading(true);
     try {
-      const data = await getGetAllUser({})
-      setUsers(data)
-      setLoading(false);
+      const data = await getGetAllUser({});
+      setUsers(data);
     } catch {
+      toast.error("Không thể tải danh sách người dùng.");
+    } finally {
       setLoading(false);
     }
   };
@@ -59,7 +69,7 @@ export default function AdminUsersPage() {
   }, []);
 
   const handleOpenDialog = (user?: User) => {
-    setEditUser(user || { full_name: "", email: "", role: "student" });
+    setEditUser(user || { full_name: "", email: "", role: "student", password: "" });
     setDialogOpen(true);
   };
 
@@ -68,35 +78,28 @@ export default function AdminUsersPage() {
     setEditUser(null);
   };
 
-  const handleCreateUser = async () => {
-    if (!editUser?.email || !editUser?.full_name || !editUser?.role || !editUser?.password) {
+  const handleSaveUser = async () => {
+    if (!editUser?.email || !editUser?.full_name || !editUser?.role) {
       toast.error("Vui lòng điền đầy đủ thông tin.");
       return;
     }
 
     try {
-      await postCreateUser(editUser);
-      toast.success("Tạo mới người dùng thành công!");
+      if (editUser.id) {
+        await putUpdateUser(editUser);
+        toast.success("Cập nhật người dùng thành công!");
+      } else {
+        if (!editUser.password) {
+          toast.error("Vui lòng nhập mật khẩu cho người dùng mới.");
+          return;
+        }
+        await postCreateUser(editUser);
+        toast.success("Tạo người dùng thành công!");
+      }
       fetchUsers();
       handleCloseDialog();
     } catch {
-      toast.error("Lỗi khi tạo người dùng.");
-    }
-  };
-
-  const handleUpdateUser = async () => {
-    if (!editUser?.id || !editUser?.email || !editUser?.full_name || !editUser?.role) {
-      toast.error("Vui lòng điền đầy đủ thông tin.");
-      return;
-    }
-
-    try {
-      await putUpdateUser(editUser);
-      toast.success("Cập nhật người dùng thành công!");
-      fetchUsers();
-      handleCloseDialog();
-    } catch {
-      toast.error("Lỗi khi cập nhật người dùng.");
+      toast.error("Lỗi khi lưu người dùng.");
     }
   };
 
@@ -112,52 +115,46 @@ export default function AdminUsersPage() {
     }
   };
 
-  const handleSaveUser = () => {
-    if (editUser?.id) {
-      handleUpdateUser();
-    } else {
-      handleCreateUser();
-    }
+  const handleOpenPasswordDialog = (user: User) => {
+    setPasswordUser(user);
+    setNewPassword("");
+    setPasswordDialogOpen(true);
   };
 
-  // const handleSaveUser = () => {
-  //   if (!editUser?.email || !editUser?.full_name || !editUser?.role) {
-  //     toast.error("Vui lòng điền đầy đủ thông tin.");
-  //     return;
-  //   }
+  const handleChangePassword = async () => {
+    if (!passwordUser?.id || !newPassword) {
+      toast.error("Vui lòng nhập mật khẩu mới.");
+      return;
+    }
 
-  //   const isEdit = !!editUser.id;
-  //   const method = isEdit ? api.put : api.post;
-  //   const url = isEdit ? `/users/${editUser.id}` : `/users/create`;
+    try {
+      await putUpdateUser({ id: passwordUser.id, password: newPassword });
+      toast.success("Đổi mật khẩu thành công!");
+      setPasswordDialogOpen(false);
+    } catch {
+      toast.error("Lỗi khi đổi mật khẩu.");
+    }
+    // try {
+    //   await putUpdateUser({
+    //     id: passwordUser.id,
+    //     email: passwordUser.email,
+    //     full_name: passwordUser.full_name || "",
+    //     role: passwordUser.role,
+    //     password: newPassword,
+    //   });
+    //   toast.success("Đổi mật khẩu thành công!");
+    //   setPasswordDialogOpen(false);
+    // } catch (error: any) {
+    //   toast.error(error?.response?.data?.detail || "Lỗi khi đổi mật khẩu.");
+    // }
+  };
 
-  //   method(url, editUser)
-  //     .then(() => {
-  //       toast.success(isEdit ? "Cập nhật thành công!" : "Tạo mới thành công!");
-  //       fetchUsers();
-  //       handleCloseDialog();
-  //     })
-  //     .catch(() => toast.error("Lỗi khi lưu người dùng"));
-  // };
+  
 
-  // const handleDeleteUser = (id: string) => {
-  //   if (confirm("Bạn có chắc muốn xóa người dùng này?")) {
-  //     api
-  //       .delete(`/users/${id}`)
-  //       .then(() => {
-  //         toast.success("Xóa thành công!");
-  //         fetchUsers();
-  //       })
-  //       .catch(() => toast.error("Lỗi khi xóa người dùng"));
-  //   }
-  // };
-
-  const admins = users.filter((u) => u.role === "admin");
-  const students = users.filter((u) => u.role === "student");
-
-  const renderTable = (title: string, data: User[]) => (
+  const renderUserTable = (data: User[]) => (
     <>
       <Typography variant="h6" fontWeight="bold" sx={{ mt: 4, mb: 2 }}>
-        {title}
+        Danh sách người dùng
       </Typography>
       {data.length === 0 ? (
         <Typography>Không có người dùng nào.</Typography>
@@ -168,6 +165,7 @@ export default function AdminUsersPage() {
               <TableRow>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>Họ tên</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>Email</TableCell>
+                <TableCell sx={{ color: "white", fontWeight: "bold" }}>Mật khẩu</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>Vai trò</TableCell>
                 <TableCell sx={{ color: "white", fontWeight: "bold" }}>Thao tác</TableCell>
               </TableRow>
@@ -177,12 +175,17 @@ export default function AdminUsersPage() {
                 <TableRow key={user.id}>
                   <TableCell>{user.full_name || "Không tên"}</TableCell>
                   <TableCell>{user.email}</TableCell>
+                  {/* <TableCell>{user.password || "••••••••"}</TableCell> */}
+                  <TableCell>{user.password || "Chưa có"}</TableCell>
                   <TableCell>{user.role}</TableCell>
                   <TableCell>
-                    <IconButton onClick={() => handleOpenDialog(user)}>
-                      <Edit />
-                    </IconButton>
-                    <IconButton onClick={() => handleDeleteUser(user.id)}>
+                    <Button size="small" variant="outlined" onClick={() => handleOpenDialog(user)} sx={{ mr: 1 }}>
+                      Sửa
+                    </Button>
+                    <Button size="small" variant="outlined" color="secondary" onClick={() => handleOpenPasswordDialog(user)} sx={{ mr: 1 }}>
+                      Đổi mật khẩu
+                    </Button>
+                    <IconButton onClick={() => handleDeleteUser(user.id)} sx={{ ml: 1 }}>
                       <Delete color="error" />
                     </IconButton>
                   </TableCell>
@@ -198,69 +201,50 @@ export default function AdminUsersPage() {
   return (
     <Box p={4}>
       <Typography variant="h5" fontWeight="bold" gutterBottom>
-        Thống kê tài khoản
+        Quản lý người dùng
       </Typography>
 
-      <Button
-        variant="contained"
-        onClick={() => handleOpenDialog()}
-        sx={{ mb: 2 }}
-      >
+      <Button variant="contained" onClick={() => handleOpenDialog()} sx={{ mb: 2 }}>
         Thêm người dùng
       </Button>
 
-      {loading ? (
-        <CircularProgress />
-      ) : (
-        <>
-          {renderTable("Quản trị viên (admin)", admins)}
-          {renderTable("Sinh viên (student)", students)}
-        </>
-      )}
+      {loading ? <CircularProgress /> : renderUserTable(users)}
 
-      {/* Dialog thêm/sửa người dùng */}
+      {/* Dialog tạo/sửa người dùng */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
-        <DialogTitle>
-          {editUser?.id ? "Sửa người dùng" : "Thêm người dùng"}
-        </DialogTitle>
+        <DialogTitle>{editUser?.id ? "Sửa người dùng" : "Thêm người dùng"}</DialogTitle>
         <DialogContent>
           <TextField
             label="Họ tên"
             fullWidth
             margin="normal"
             value={editUser?.full_name || ""}
-            onChange={(e) =>
-              setEditUser({ ...editUser, full_name: e.target.value })
-            }
+            onChange={(e) => setEditUser({ ...editUser, full_name: e.target.value })}
           />
           <TextField
             label="Email"
             fullWidth
             margin="normal"
             value={editUser?.email || ""}
-            onChange={(e) =>
-              setEditUser({ ...editUser, email: e.target.value })
-            }
+            onChange={(e) => setEditUser({ ...editUser, email: e.target.value })}
           />
-          <TextField
-            label="Mật khẩu"
-            type="password"
-            fullWidth
-            margin="normal"
-            value={editUser?.password || ""}
-            onChange={(e) =>
-              setEditUser({ ...editUser, password: e.target.value })
-            }
-          />
+          {!editUser?.id && (
+            <TextField
+              label="Mật khẩu"
+              type="text"
+              fullWidth
+              margin="normal"
+              value={editUser?.password || ""}
+              onChange={(e) => setEditUser({ ...editUser, password: e.target.value })}
+            />
+          )}
           <TextField
             select
             label="Vai trò"
             fullWidth
             margin="normal"
             value={editUser?.role || ""}
-            onChange={(e) =>
-              setEditUser({ ...editUser, role: e.target.value })
-            }
+            onChange={(e) => setEditUser({ ...editUser, role: e.target.value })}
             SelectProps={{ native: true }}
           >
             <option value="">Chọn vai trò</option>
@@ -272,6 +256,27 @@ export default function AdminUsersPage() {
           <Button onClick={handleCloseDialog}>Hủy</Button>
           <Button onClick={handleSaveUser} variant="contained">
             Lưu
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Dialog đổi mật khẩu */}
+      <Dialog open={passwordDialogOpen} onClose={() => setPasswordDialogOpen(false)}>
+        <DialogTitle>Đổi mật khẩu cho {passwordUser?.email}</DialogTitle>
+        <DialogContent>
+          <TextField
+            label="Mật khẩu mới"
+            fullWidth
+            margin="normal"
+            type="password"
+            value={newPassword}
+            onChange={(e) => setNewPassword(e.target.value)}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setPasswordDialogOpen(false)}>Hủy</Button>
+          <Button variant="contained" onClick={handleChangePassword}>
+            Cập nhật
           </Button>
         </DialogActions>
       </Dialog>

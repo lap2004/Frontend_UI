@@ -1,19 +1,14 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import { ROLE_VALUE } from "@/src/config/const";
 import Cookies from "js-cookie";
 
-// -------------------------Check login------------------------------------
-
 export const isLogin = (): boolean => {
-  return !!Cookies.get("access_token"); // luôn đọc realtime từ cookies
+  return !!Cookies.get("access_token");
 };
 
 export const getUserRole = (): string | undefined => {
   return Cookies.get(ROLE_VALUE);
 };
 
-// -----------------Get/set/remove item localstorage-----------------------
 export const setItemLocalStorage = (key: string, value: any) =>
   typeof localStorage !== "undefined" && key && value
     ? localStorage.setItem(key, JSON.stringify(value))
@@ -34,7 +29,7 @@ export const removeItemLocalStorage = (
   const { removeAll } = options || { removeAll: false };
 
   if (removeAll) {
-    // Remove all item in localstorage
+   
     localStorage.clear();
     return true;
   }

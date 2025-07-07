@@ -37,34 +37,49 @@ const LoginPage = () => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    try {
-      const res = await postUserLogin({
-        email: form.email,
-        password: form.password,
-      });
-      console.log(res.data)
-      if (res?.data?.access_token) {
-        setAuthCookies(res.data.access_token, res.data.refresh_token);
-        Cookies.set(ROLE_VALUE, res.data.role);
-        const savedRole = getUserRole();
-        toast.success("Đăng nhập thành công!");
-        if (savedRole === "admin") {
-          router.push("/admin/dashboard");
-        } else {
-          router.push("/");
-        }
-      } else {
-        toast.error(res.data?.detail || "Đăng nhập thất bại!");
+const handleLogin = async () => {
+  // e.preventDefault();
+  setIsLoading(true);
+  try {
+    const res = await postUserLogin({
+      email: form.email,
+      password: form.password,
+    });
+
+    console.log(res.data);
+    console.log(res.data.force_password_change)
+    if (res?.data?.access_token) {
+      // ✅ Set cookies
+      setAuthCookies(res.data.access_token, res.data.refresh_token);
+      Cookies.set(ROLE_VALUE, res.data.role);
+
+      const savedRole = getUserRole();
+
+      // ✅ Kiểm tra force_password_change
+      if (res.data.force_password_change === true) {
+        router.push("/change-password");
+        toast.info("Bạn đang sử dụng mật khẩu tạm thời. Vui lòng đổi mật khẩu.");
+        // router.push("/change-password");
+        return; // ⚠️ Không redirect tiếp phía dưới
       }
-    } catch (err: any) {
-      toast.error(err.response?.data?.detail || "Đăng nhập thất bại!");
-    } finally {
-      setIsLoading(false);
+
+      toast.success("Đăng nhập thành công!");
+
+      if (savedRole === "admin") {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/");
+      }
+    } else {
+      toast.error(res.data?.detail || "Đăng nhập thất bại!");
     }
-  };
+  } catch (err: any) {
+    toast.error(err.response?.data?.detail || "Đăng nhập thất bại!");
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   return (
     <Container maxWidth="xs" sx={{ mt: 8, mb: 4 }}>
@@ -78,7 +93,7 @@ const LoginPage = () => {
             Đăng nhập
           </Typography>
 
-          <Box component="form" onSubmit={handleLogin} sx={{ mt: 3 }}>
+          <Box component="form" sx={{ mt: 3 }}>
             <TextField
               fullWidth
               label="Email"
@@ -135,16 +150,27 @@ const LoginPage = () => {
             />
 
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Button
-                type="submit"
-                fullWidth
-                variant="contained"
-                color="error"
-                sx={{ mt: 2, py: 1.5 }}
+              {/* <button
+                // type="submit"
+                // fullWidth
+                // variant="contained"
+                // color="error"
+                // sx={{ mt: 2, py: 1.5 }}
+                className="ta"
                 disabled={isloading}
+                onClick={handleLogin}
               >
                 {isloading ? "Đang đăng nhập..." : "Đăng Nhập"}
-              </Button>
+              </button> */}
+              <button
+                disabled={isloading}
+                onClick={handleLogin}
+                className={`w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded transition duration-300 ${
+                  isloading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
+              >
+                {isloading ? "Đang đăng nhập..." : "Đăng Nhập"}
+              </button>
             </motion.div>
 
             <Typography
