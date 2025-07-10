@@ -9,7 +9,6 @@ export default function Topbar() {
         <Typography variant="h6">Admin Panel</Typography>
         <Box>
           <IconButton color="inherit" title="Logout">
-            {/* <LogoutIcon /> */}
           </IconButton>
         </Box>
       </Toolbar>

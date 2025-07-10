@@ -34,7 +34,7 @@ export default function SearchButton({ defaultValue = "" }: { defaultValue?: str
   const handleSearch = () => {
     const params = new URLSearchParams(searchParams.toString());
     params.set('search', searchTerm);
-    params.set('page', '1'); // reset về trang 1 khi search
+    params.set('page', '1'); 
     router.push(`/admin/users?${params.toString()}`);
   };
 

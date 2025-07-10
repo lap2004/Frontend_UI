@@ -44,11 +44,11 @@ export default function Page() {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editUser, setEditUser] = useState<Partial<User> | null>(null);
 
-  const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
-  const [passwordUser, setPasswordUser] = useState<User | null>(null);
-  const [newPassword, setNewPassword] = useState("");
+  // const [passwordDialogOpen, setPasswordDialogOpen] = useState(false);
+  // const [passwordUser, setPasswordUser] = useState<User | null>(null);
+  // const [newPassword, setNewPassword] = useState("");
   const { getGetAllUser } = useGetAllUser();
-  const { postCreateUser } = useCreateUser(); 
+  const { postCreateUser } = useCreateUser();
   const { putUpdateUser } = useUpdateUser();
   const { deleteUser } = useDeleteUser();
 
@@ -86,7 +86,9 @@ export default function Page() {
 
     try {
       if (editUser.id) {
-        await putUpdateUser(editUser);
+        const payload = { ...editUser };
+        if (!payload.password) delete payload.password;
+        await putUpdateUser(payload);
         toast.success("Cập nhật người dùng thành công!");
       } else {
         if (!editUser.password) {
@@ -114,43 +116,6 @@ export default function Page() {
       }
     }
   };
-
-  const handleOpenPasswordDialog = (user: User) => {
-    setPasswordUser(user);
-    setNewPassword("");
-    setPasswordDialogOpen(true);
-  };
-
-  const handleChangePassword = async () => {
-    if (!passwordUser?.id || !newPassword) {
-      toast.error("Vui lòng nhập mật khẩu mới.");
-      return;
-    }
-
-    try {
-      await putUpdateUser({ id: passwordUser.id, password: newPassword });
-      toast.success("Đổi mật khẩu thành công!");
-      setPasswordDialogOpen(false);
-    } catch {
-      toast.error("Lỗi khi đổi mật khẩu.");
-    }
-    // try {
-    //   await putUpdateUser({
-    //     id: passwordUser.id,
-    //     email: passwordUser.email,
-    //     full_name: passwordUser.full_name || "",
-    //     role: passwordUser.role,
-    //     password: newPassword,
-    //   });
-    //   toast.success("Đổi mật khẩu thành công!");
-    //   setPasswordDialogOpen(false);
-    // } catch (error: any) {
-    //   toast.error(error?.response?.data?.detail || "Lỗi khi đổi mật khẩu.");
-    // }
-  };
-
-  
-
   const renderUserTable = (data: User[]) => (
     <>
       <Typography variant="h6" fontWeight="bold" sx={{ mt: 4, mb: 2 }}>
@@ -175,15 +140,11 @@ export default function Page() {
                 <TableRow key={user.id}>
                   <TableCell>{user.full_name || "Không tên"}</TableCell>
                   <TableCell>{user.email}</TableCell>
-                  {/* <TableCell>{user.password || "••••••••"}</TableCell> */}
                   <TableCell>{user.password || "Chưa có"}</TableCell>
                   <TableCell>{user.role}</TableCell>
                   <TableCell>
                     <Button size="small" variant="outlined" onClick={() => handleOpenDialog(user)} sx={{ mr: 1 }}>
                       Sửa
-                    </Button>
-                    <Button size="small" variant="outlined" color="secondary" onClick={() => handleOpenPasswordDialog(user)} sx={{ mr: 1 }}>
-                      Đổi mật khẩu
                     </Button>
                     <IconButton onClick={() => handleDeleteUser(user.id)} sx={{ ml: 1 }}>
                       <Delete color="error" />
@@ -210,7 +171,6 @@ export default function Page() {
 
       {loading ? <CircularProgress /> : renderUserTable(users)}
 
-      {/* Dialog tạo/sửa người dùng */}
       <Dialog open={dialogOpen} onClose={handleCloseDialog}>
         <DialogTitle>{editUser?.id ? "Sửa người dùng" : "Thêm người dùng"}</DialogTitle>
         <DialogContent>
@@ -228,16 +188,18 @@ export default function Page() {
             value={editUser?.email || ""}
             onChange={(e) => setEditUser({ ...editUser, email: e.target.value })}
           />
-          {!editUser?.id && (
-            <TextField
-              label="Mật khẩu"
-              type="text"
-              fullWidth
-              margin="normal"
-              value={editUser?.password || ""}
-              onChange={(e) => setEditUser({ ...editUser, password: e.target.value })}
-            />
-          )}
+          <TextField
+            label="Mật khẩu mới"
+            type="text"
+            fullWidth
+            margin="normal"
+            value={editUser?.password || ""}
+            onChange={(e) => setEditUser({ ...editUser, password: e.target.value })}
+          />
+          <Typography variant="body2" sx={{ mt: -1, mb: 2, color: "gray" }}>
+            {editUser?.id ? "(Để trống nếu không muốn đổi mật khẩu)" : ""}
+          </Typography>
+
           <TextField
             select
             label="Vai trò"
@@ -256,27 +218,6 @@ export default function Page() {
           <Button onClick={handleCloseDialog}>Hủy</Button>
           <Button onClick={handleSaveUser} variant="contained">
             Lưu
-          </Button>
-        </DialogActions>
-      </Dialog>
-
-      {/* Dialog đổi mật khẩu */}
-      <Dialog open={passwordDialogOpen} onClose={() => setPasswordDialogOpen(false)}>
-        <DialogTitle>Đổi mật khẩu cho {passwordUser?.email}</DialogTitle>
-        <DialogContent>
-          <TextField
-            label="Mật khẩu mới"
-            fullWidth
-            margin="normal"
-            type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-          />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setPasswordDialogOpen(false)}>Hủy</Button>
-          <Button variant="contained" onClick={handleChangePassword}>
-            Cập nhật
           </Button>
         </DialogActions>
       </Dialog>

@@ -27,9 +27,6 @@ const drawerWidth = 240;
 const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, href: '/admin/dashboard' },
     { text: 'Users', icon: <PeopleIcon />, href: '/admin/users' },
-    { text: 'About', icon: <ShoppingCartIcon />, href: '/admin/about' },
-    { text: 'Database', icon: <SettingsIcon />, href: '/admin/database' },
-    // { text: 'Settings', icon: <SettingsIcon />, href: '/admin/settings' },
 ];
 
 export default function Sidebar() {
@@ -52,7 +49,6 @@ export default function Sidebar() {
             console.error("Logout failed", err);
         }
     };
-
     return (
         <Drawer
             variant="permanent"
@@ -77,7 +73,6 @@ export default function Sidebar() {
                         </Link>
                     ))}
                 </List>
-
                 <Box sx={{
                     background: "#1f2937",
                     height: "5rem",
@@ -85,8 +80,6 @@ export default function Sidebar() {
                     justifyContent: "space-between",
                     paddingX: 2,
                     alignItems: "center"
-
-
                 }}>
                     <Box sx={{ color: "white", display: "flex" }}>
                         <AccountCircleIcon sx={{ fontSize: "2rem", marginRight: "5px" }} />

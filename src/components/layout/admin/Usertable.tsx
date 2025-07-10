@@ -84,7 +84,6 @@ export default function UserTable({ users }: { users: User[] }) {
 
     const handleConfirmUpdate = async () => {
         if (!editingUserId) return;
-// https://final-shall-procurement-vegetarian.trycloudflare.com
         try {
             const res = await fetch(`http://127.0.0.1:8000/users/${editingUserId}`, {
                 method: "PUT",

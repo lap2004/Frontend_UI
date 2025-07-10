@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import axios from "axios";
 import Cookies from "js-cookie";
 import { removeItemLocalStorage } from "../helper";
 import { USER_NAME, ROLE_VALUE } from "@/src/config/const";
 
-const timeOut = 600_000; // 10 minutes
+const timeOut = 600_000;
 
 export const restTransport = () => {
   const client = axios.create({
@@ -35,7 +34,6 @@ export const restTransport = () => {
 
   const rootUrl = () => client.defaults.baseURL;
 
-  // --- Request Interceptor ---
   client.interceptors.request.use(
     (config) => {
       config.headers["Access-Control-Allow-Origin"] = "*";
@@ -55,7 +53,6 @@ export const restTransport = () => {
     (error) => Promise.reject(error)
   );
 
-  // --- Response Interceptor ---
   client.interceptors.response.use(
     (response) => response,
     async (error) => {
@@ -70,7 +67,7 @@ export const restTransport = () => {
         removeItemLocalStorage(ROLE_VALUE);
       }
 
-      return Promise.reject(error); // giao cho component xử lý
+      return Promise.reject(error); 
     }
   );
 

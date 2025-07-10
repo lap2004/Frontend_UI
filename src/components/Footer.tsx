@@ -14,46 +14,51 @@ export default function Footer() {
         zIndex: 1,
       }}
     >
-      <Container maxWidth="lg">
+      <Container sx={{ maxWidth: { md: 1440 } }}>
         <Grid container spacing={4} justifyContent="space-between">
-          {/* Logo + Subscribe */}
+
           <Grid item xs={12} md={3}>
             <Image src="/logo.png" alt="Logo" width={150} height={50} />
           </Grid>
 
-          {/* Ve chng toi */}
           <Grid item xs={12} md={2}>
             <Typography variant="subtitle1" fontWeight="bold">
               Về Chúng Tôi
             </Typography>
             <Stack spacing={1} mt={1}>
-              {["Tin tức", "Sự Kiện", "Blog", "Tuyển Dụng"].map((item) => (
+              {["Tin tức", "Sự Kiện", "Blog", "Tuyển Dụng"].map((item, idx) => (
                 <Link
                   href="#"
                   underline="none"
                   color="inherit"
                   className="font-light"
-                  key={item}
+                  key={idx}
                   position={"relative"}
                 >
                   <Typography
+                    component="p"
                     variant="body2"
                     className="font-light"
-                    color={"grey"}
+                    color="grey"
                     sx={{
-                      ":hover": { color: "White" },
+                      position: "relative",
+                      display: "inline-block",
+                      ":hover": { color: "white" },
+
                       "&::after": {
                         content: '""',
                         position: "absolute",
-                        width: "0%",
-                        height: "2px",
                         bottom: 0,
                         left: 0,
+                        width: 0,
+                        height: "2px",
                         backgroundColor: "primary.main",
-                        transition: "width 0.3s ease-in-out",
+                        transition: "width .3s ease-in-out",
                       },
+
                       "&:hover::after": {
-                        width: "50%",
+                        color: "white",
+                        width: "100%",
                       },
                     }}
                   >
@@ -64,7 +69,6 @@ export default function Footer() {
             </Stack>
           </Grid>
 
-          {/* Helpful Links */}
           <Grid item xs={12} md={2}>
             <Typography variant="subtitle1" fontWeight="bold">
               Helpful Links
@@ -85,20 +89,26 @@ export default function Footer() {
                   position={"relative"}
                 >
                   <Typography
+                    component="p"
                     variant="body2"
                     className="font-light"
-                    color={"grey"}
+                    color="grey"
                     sx={{
+                      position: "relative",
+                      display: "inline-block",
+                      ":hover": { color: "white" },
+
                       "&::after": {
                         content: '""',
                         position: "absolute",
-                        width: "0%",
-                        height: "2px",
                         bottom: 0,
                         left: 0,
+                        width: 0,
+                        height: "2px",
                         backgroundColor: "primary.main",
-                        transition: "width 0.3s ease-in-out",
+                        transition: "width .3s ease-in-out",
                       },
+
                       "&:hover::after": {
                         color: "white",
                         width: "100%",
@@ -112,7 +122,6 @@ export default function Footer() {
             </Stack>
           </Grid>
 
-          {/* Contact Us */}
           <Grid item xs={12} md={3}>
             <Typography variant="subtitle1" fontWeight="bold">
               Contact Us
@@ -142,7 +151,6 @@ export default function Footer() {
           </Grid>
         </Grid>
 
-        {/* Bottom bar */}
         <Box
           mt={5}
           pt={2}
@@ -152,7 +160,7 @@ export default function Footer() {
           flexWrap="wrap"
         >
           <Typography variant="body2">
-            2025 © Dat_Lap_Chien | Van Lang University{" "}
+            ©2025 | Van Lang University{" "}
           </Typography>
           <Stack direction="row" spacing={3}>
             {["FAQ", "Privacy", "Terms & Condition"].map((item) => (

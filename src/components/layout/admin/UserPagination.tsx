@@ -24,15 +24,12 @@ export default function UserPagination({
 
   return (
     <div className={`mt-4 flex gap-2 items-center ${className}`}>
-      {/* Mũi tên trái */}
       <Link
         href={makeLink(currentPage - 1)}
         className={` hover:text-blue-600 ${currentPage === 1 ? "opacity-50 pointer-events-none" : ""}`}
       >
         <ChevronLeftIcon />
       </Link>
-
-      {/* Danh sách số trang */}
       {Array.from({ length: totalPages }).map((_, idx) => {
         const page = idx + 1;
         return (
@@ -49,8 +46,6 @@ export default function UserPagination({
           </Link>
         );
       })}
-
-      {/* Mũi tên phải */}
       <Link
         href={makeLink(currentPage + 1)}
         className={` hover:text-blue-600 ${currentPage === totalPages ? "opacity-50 pointer-events-none" : ""}`}

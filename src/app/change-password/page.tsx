@@ -24,17 +24,17 @@ export default function ChangePasswordPage() {
 
 const handleSubmit = async () => {
   if (!newPassword || newPassword.length < 6) {
-    toast.warning("⚠️ Mật khẩu phải có ít nhất 6 ký tự.");
+    toast.warning("Mật khẩu phải có ít nhất 6 ký tự.");
     return;
   }
 
   if (newPassword !== confirmPassword) {
-    toast.warning("⚠️ Mật khẩu xác nhận không khớp.");
+    toast.warning("Mật khẩu xác nhận không khớp.");
     return;
   }
 
   if (!currentPassword) {
-    toast.warning("⚠️ Vui lòng nhập mật khẩu hiện tại.");
+    toast.warning("Vui lòng nhập mật khẩu hiện tại.");
     return;
   }
 
@@ -55,13 +55,13 @@ const handleSubmit = async () => {
 
     if (!res.ok) {
       const data = await res.json();
-      throw new Error(data.detail || "❌ Lỗi khi đổi mật khẩu.");
+      throw new Error(data.detail || "Lỗi khi đổi mật khẩu.");
     }
 
-    toast.success("✅ Mật khẩu đã được thay đổi thành công.");
+    toast.success("Mật khẩu đã được thay đổi thành công.");
     setSubmitted(true);
   } catch (err: any) {
-    toast.error(err.message || "❌ Đã xảy ra lỗi.");
+    toast.error(err.message || "Đã xảy ra lỗi.");
   } finally {
     setLoading(false);
   }
@@ -80,7 +80,7 @@ const handleSubmit = async () => {
     </Typography>
     <Button
       variant="outlined"
-      href="/user/home" // hoặc '/login' tùy cấu trúc route của bạn
+      href="/user/home" 
     >
       Quay về trang chat
     </Button>

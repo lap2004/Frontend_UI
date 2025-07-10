@@ -1,6 +1,5 @@
 import { create } from "zustand";
 
-// Định nghĩa kiểu cho State
 type State = {
   isLogin: boolean;
 };
