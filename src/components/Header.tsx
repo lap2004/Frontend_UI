@@ -155,7 +155,7 @@ const Header = () => {
                       }
                     }}
                   >
-                    {loggedIn ? "Đăng Xuất" : "Đăng Nhập"}
+                    {loggedIn ? "Đăng Xuất" : "Dành cho Sinh Viên"}
                   </Button>
                 )}
               </motion.div>
@@ -223,7 +223,7 @@ const Header = () => {
               </ListItemButton>
             ) : (
               <ListItemButton component={Link} href="/login" onClick={() => setDrawerOpen(false)}>
-                <ListItemText primary="Đăng Nhập" />
+                <ListItemText primary="Dành cho Sinh Viên" />
               </ListItemButton>
             )}
           </ListItem>
