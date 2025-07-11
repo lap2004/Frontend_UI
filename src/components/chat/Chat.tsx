@@ -235,6 +235,7 @@ export default function Chat() {
                       borderRadius: 8,
                       padding: 8,
                       borderColor: "#ddd",
+                      outline: "none",
                       resize: "none",
                       fontSize: 14,
                       fontFamily: "inherit",
