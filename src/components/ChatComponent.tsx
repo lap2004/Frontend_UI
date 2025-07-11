@@ -182,6 +182,7 @@ export default function ChatComponent() {
             outline: "none",
             fontSize: 14,
             fontFamily: "inherit",
+            color: "black",
           }}
           minRows={1}
           maxRows={4}
