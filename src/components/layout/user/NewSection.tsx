@@ -19,13 +19,17 @@ export default function NewSection() {
                 alignItems: "center",
             }}
         >
+
+            {/* vid va backdrop */}
             <Box
+            
                 sx={{
                     position: "absolute",
                     inset: 0,
                     zIndex: -2,
                     pointerEvents: "none",
                     overflow: "hidden",
+                    
                 }}
             >
                 <video
@@ -39,6 +43,7 @@ export default function NewSection() {
                         height: "100%",
                         objectFit: "cover",
                     }}
+                    
                 />
 
                 <Box
@@ -49,6 +54,8 @@ export default function NewSection() {
                     }}
                 />
             </Box>
+
+            {/* noi dung */}
             <Container maxWidth="lg">
                 <Grid container alignItems="center">
                     <MotionBox
@@ -111,7 +118,7 @@ export default function NewSection() {
                                 </Button>
                                 <Button
                                     component={Link}
-                                    href="/contact"
+                                    href="https://www.vlu.edu.vn/about-us/history-milestone"
                                     variant="outlined"
                                     sx={{
                                         borderColor: "#6263FF",

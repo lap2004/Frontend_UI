@@ -1,11 +1,11 @@
 "use client";
 import Chat from "@/src/components/chat/Chat";
-import Achieve from "@/src/components/layout/user/Achieve";
-import VideoHero from "@/src/components/layout/user/Hero";
-import Major from "@/src/components/layout/user/Major";
-import News from "@/src/components/layout/user/News";
-import NewSection from "@/src/components/layout/user/NewSection";
-import RoadPath from "@/src/components/layout/user/RoadPath";
+import Achieve from "@/src/components/layout/user_1/Achieve";
+import VideoHero from "@/src/components/layout/user_1/Hero";
+import Major from "@/src/components/layout/user_1/Major";
+import News from "@/src/components/layout/user_1/News";
+import NewSection from "@/src/components/layout/user_1/NewSection";
+import RoadPath from "@/src/components/layout/user_1/RoadPath";
 import {
   Container
 } from "@mui/material";
