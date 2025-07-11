@@ -239,6 +239,7 @@ export default function Chat() {
                       resize: "none",
                       fontSize: 14,
                       fontFamily: "inherit",
+                      color: "black",
                     }}
                     minRows={1}
                     maxRows={3}
