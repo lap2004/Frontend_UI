@@ -97,7 +97,7 @@ export default function Chat() {
   return (
     <>
       <motion.button
-        className="bg-[#B02E35] rounded-full w-14 h-14 fixed bottom-5 right-5 z-[1403] flex items-center justify-center"
+        className="bg-[#B02E35] rounded-full w-14 h-14 fixed bottom-5 right-5 md:z-[1403] z-[1401] flex items-center justify-center .fab-xs"
         onClick={() => setIsVisible((v) => !v)}
         whileTap={{ scale: 0.9 }}
         animate={{ y: [0, -10, 0] }}       
@@ -112,7 +112,7 @@ export default function Chat() {
         {isVisible ? (
           <CancelIcon sx={{ color: "#fff" }} />
         ) : (
-          <Image src="/chatbot.png" alt="Chatbot Logo" width={1000} height={1000} />
+          <img src="/chatbot.png" alt="Chatbot Logo"/>
         )}
       </motion.button>
 
