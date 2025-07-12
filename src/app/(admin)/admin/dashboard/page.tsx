@@ -1,123 +1,170 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { toast } from "react-toastify";
-import Cookies from "js-cookie";
-import { ROLE_VALUE } from "@/src/config/const";
-import { useUser } from "@/src/components/store/useUser";
-import axios from "axios";
+import { useGetStats } from "@/src/services/hooks/hookAdmin";
+import {
+  Box,
+  CircularProgress,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
 import {
   BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  Legend,
-  ResponsiveContainer,
-} from "recharts";
+  LineChart,
+  PieChart,
+} from "@mui/x-charts";
+import { useEffect, useState } from "react";
 
-type Stats = {
+interface StatItem {
+  date: string;
+  count: number;
+}
+
+interface TopPage {
+  path: string;
+  count: number;
+}
+
+interface DashboardStats {
   total_users: number;
-  total_students: number;
-  total_admins: number;
-  latest_signup: string;
+  total_chats: number;
+  total_embeddings: number;
+  total_page_views: number;
+  embedding_distribution: {
+    admissions: number;
+    students: number;
+    pdfs: number;
+  };
+  daily_chat_stats: StatItem[];
+  user_signup_stats: StatItem[];
+  page_view_stats: StatItem[];
+  top_pages: TopPage[];
+}
+
+const fallbackData: DashboardStats = {
+  total_users: 0,
+  total_chats: 0,
+  total_embeddings: 0,
+  total_page_views: 0,
+  embedding_distribution: { admissions: 0, students: 0, pdfs: 0 },
+  daily_chat_stats: [],
+  user_signup_stats: [],
+  page_view_stats: [],
+  top_pages: [],
 };
 
 export default function AdminDashboardPage() {
-  const router = useRouter();
-  const { user, loading } = useUser();
-  const [stats, setStats] = useState<Stats | null>(null);
-  const [signupData, setSignupData] = useState([]);
-  const [chatUsageData, setChatUsageData] = useState([]);
+  const { getGetStats } = useGetStats();
+  const [data, setData] = useState<DashboardStats>(fallbackData);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
   useEffect(() => {
-    const role = Cookies.get(ROLE_VALUE);
-    if (!loading && (user?.role !== "admin" || role !== "admin")) {
-      toast.error("Bạn cần quyền admin để truy cập");
-      router.push("/login");
-    }
-  }, [user, loading, router]);
-
-  useEffect(() => {
-    const fetchData = async () => {
+    const fetchStats = async () => {
       try {
-        const res = await axios.get("/api/admin/dashboard");
-        setStats(res.data.summary);
-        setSignupData(res.data.signup_by_day);
-        setChatUsageData(res.data.chat_usage);
+        const result = await getGetStats({});
+        setData(result);
       } catch (err) {
-        toast.error("Lỗi khi tải dữ liệu dashboard");
+        setError(true);
+      } finally {
+        setLoading(false);
       }
     };
+    fetchStats();
+  }, [getGetStats]);
 
-    if (user?.role === "admin") {
-      fetchData();
-    }
-  }, [user]);
-  useEffect(() => {
-  console.log("user check:", user);
-  console.log("cookies role:", Cookies.get(ROLE_VALUE));
-}, [user]);
-
-  if (loading || !user || !stats) {
-    return (
-      <div className="flex items-center justify-center h-screen">
-        <p className="text-gray-500 text-lg">Đang tải dữ liệu dashboard...</p>
-      </div>
-    );
-  }
+  if (loading) return <Box p={4}><CircularProgress /></Box>;
+  if (error) return <Box p={4}>Lỗi khi tải dữ liệu.</Box>;
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-blue-700 mb-6">Admin Dashboard</h1>
+    <Box p={4}>
+      <Grid container spacing={3}>
+        {[
+          { title: "Tổng người dùng", value: data.total_users },
+          { title: "Tổng lượt hỏi", value: data.total_chats },
+          { title: "Tổng embedding", value: data.total_embeddings },
+          { title: "Lượt truy cập", value: data.total_page_views },
+        ].map((item, idx) => (
+          <Grid item xs={12} md={3} key={idx}>
+            <Paper sx={{ p: 2 }}>
+              <Typography variant="subtitle2" color="text.secondary">
+                {item.title}
+              </Typography>
+              <Typography variant="h5" fontWeight="bold">
+                {item.value}
+              </Typography>
+            </Paper>
+          </Grid>
+        ))}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-        <Card title="Tổng số người dùng" value={stats.total_users} />
-        <Card title="Số lượng sinh viên" value={stats.total_students} />
-        <Card title="Quản trị viên" value={stats.total_admins} />
-        <Card title="Đăng ký gần nhất" value={stats.latest_signup} />
-      </div>
+        <Grid item xs={12} md={4}>
+          <Paper sx={{ p: 2 }}>
+            <Typography variant="subtitle2">Phân bổ Embedding</Typography>
+            <PieChart
+              height={200}
+              series={[
+                {
+                  data: [
+                    { value: data.embedding_distribution.admissions, label: "Admissions" },
+                    { value: data.embedding_distribution.students, label: "Students" },
+                    { value: data.embedding_distribution.pdfs, label: "PDFs" },
+                  ],
+                },
+              ]}
+            />
+          </Paper>
+        </Grid>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-lg font-semibold mb-2">Đăng ký người dùng theo ngày</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={signupData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="count" fill="#8884d8" name="Số lượt đăng ký" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        <Grid item xs={12} md={8}>
+          <Paper sx={{ p: 2 }}>
+            <Typography variant="subtitle2">Người dùng mới theo ngày</Typography>
+            <BarChart
+              height={250}
+              xAxis={[{ data: data.user_signup_stats.map(u => u.date), scaleType: "band" }]}
+              series={[{ data: data.user_signup_stats.map(u => u.count) }]}
+              margin={{ top: 10, bottom: 30 }}
+              slotProps={{ legend: undefined }}
+            />
+          </Paper>
+        </Grid>
 
-        <div className="bg-white p-4 rounded shadow">
-          <h2 className="text-lg font-semibold mb-2">Lượt hỏi chatbot theo ngày</h2>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={chatUsageData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="date" />
-              <YAxis />
-              <Tooltip />
-              <Legend />
-              <Bar dataKey="questions" fill="#82ca9d" name="Lượt hỏi" />
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
-    </div>
-  );
-}
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2 }}>
+            <Typography variant="subtitle2">Lượt hỏi mỗi ngày</Typography>
+            <LineChart
+              height={300}
+              series={[{ data: data.daily_chat_stats.map(d => d.count), label: "Lượt hỏi" }]}
+              xAxis={[{ data: data.daily_chat_stats.map(d => d.date), scaleType: "point" }]}
+              slotProps={{ legend: undefined }}
+            />
+          </Paper>
+        </Grid>
 
-function Card({ title, value }: { title: string; value: string | number }) {
-  return (
-    <div className="bg-white shadow rounded p-4 text-center">
-      <p className="text-gray-600">{title}</p>
-      <p className="text-2xl font-bold text-blue-700 mt-1">{value}</p>
-    </div>
+        <Grid item xs={12}>
+          <Paper sx={{ p: 2 }}>
+            <Typography variant="subtitle2">Lượt truy trang mỗi ngày</Typography>
+            <LineChart
+              height={300}
+              series={[{ data: data.page_view_stats.map(p => p.count), label: "Lượt truy cập" }]}
+              xAxis={[{ data: data.page_view_stats.map(p => p.date), scaleType: "point" }]}
+              slotProps={{ legend: undefined }}
+            />
+          </Paper>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ p: 2 }}>
+            <Typography variant="subtitle2">Top trang được truy nhiều</Typography>
+            <BarChart
+              height={250}
+              xAxis={[{ data: data.top_pages.map(p => p.path), scaleType: "band" }]}
+              series={[{ data: data.top_pages.map(p => p.count) }]}
+              margin={{ top: 10, bottom: 30 }}
+              slotProps={{ legend: undefined }}
+            />
+          </Paper>
+        </Grid>
+      </Grid>
+    </Box>
   );
 }
