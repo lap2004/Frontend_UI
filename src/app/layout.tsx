@@ -5,6 +5,9 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Roboto } from "next/font/google";
 import "./globals.css";
 import { EmotionProvider } from '../components/emotion/provider';
+import { usePathname } from 'next/navigation';
+import { useGetTrack } from '../services/hooks/hookAdmin';
+import { useEffect } from 'react';
 
 const roboto = Roboto({
   subsets: ["latin", "vietnamese"],
@@ -34,6 +37,16 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+    const pathname = usePathname();
+  const { postUseTrack } = useGetTrack();
+
+  useEffect(() => {
+    if (pathname) {
+      postUseTrack({ path: pathname }).catch((err) => {
+        console.error("Tracking failed:", err);
+      });
+    }
+  }, [pathname]);
   return (
     <html lang="en">
       <body className={`${roboto.className} antialiased`}>

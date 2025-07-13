@@ -1,5 +1,5 @@
-import { getstats } from "../apis/admin";
-import { useGetAPI } from "./hookApi";
+import { getstats, useTrack } from "../apis/admin";
+import { useGetAPI, usePostAPI } from "./hookApi";
 
 const useGetStats = () => {
   const { loading, get: getGetStats, error, setError } = useGetAPI(getstats);
@@ -11,4 +11,19 @@ const useGetStats = () => {
   };
 };
 
-export { useGetStats};
+const useGetTrack = () => {
+  const {
+    loading,
+    post: postUseTrack,
+    error,
+    setError,
+  } = usePostAPI(useTrack);
+  return {
+    loading,
+    postUseTrack,
+    error,
+    setError,
+  };
+};
+
+export { useGetStats, useGetTrack};

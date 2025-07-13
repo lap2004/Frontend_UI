@@ -27,7 +27,10 @@ interface TopPage {
 
 interface DashboardStats {
   total_users: number;
-  total_chats: number;
+  total_chats: {
+    student: number;
+    admission: number;
+  };
   total_embeddings: number;
   total_page_views: number;
   embedding_distribution: {
@@ -43,7 +46,7 @@ interface DashboardStats {
 
 const fallbackData: DashboardStats = {
   total_users: 0,
-  total_chats: 0,
+  total_chats: { student: 0, admission: 0 },
   total_embeddings: 0,
   total_page_views: 0,
   embedding_distribution: { admissions: 0, students: 0, pdfs: 0 },
@@ -79,12 +82,15 @@ export default function AdminDashboardPage() {
   return (
     <Box p={4}>
       <Grid container spacing={3}>
-        {[
-          { title: "Tổng người dùng", value: data.total_users },
-          { title: "Tổng lượt hỏi", value: data.total_chats },
-          { title: "Tổng embedding", value: data.total_embeddings },
-          { title: "Lượt truy cập", value: data.total_page_views },
-        ].map((item, idx) => (
+        {[{
+          title: "Tổng người dùng", value: data.total_users
+        }, {
+          title: "Tổng lượt hỏi", value: data.total_chats.student + data.total_chats.admission
+        }, {
+          title: "Tổng embedding", value: data.total_embeddings
+        }, {
+          title: "Lượt truy cập", value: data.total_page_views
+        }].map((item, idx) => (
           <Grid item xs={12} md={3} key={idx}>
             <Paper sx={{ p: 2 }}>
               <Typography variant="subtitle2" color="text.secondary">
@@ -97,25 +103,39 @@ export default function AdminDashboardPage() {
           </Grid>
         ))}
 
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={6}>
           <Paper sx={{ p: 2 }}>
-            <Typography variant="subtitle2">Phân bổ Embedding</Typography>
-            <PieChart
-              height={200}
-              series={[
-                {
-                  data: [
-                    { value: data.embedding_distribution.admissions, label: "Admissions" },
-                    { value: data.embedding_distribution.students, label: "Students" },
-                    { value: data.embedding_distribution.pdfs, label: "PDFs" },
-                  ],
-                },
-              ]}
+            <Typography variant="subtitle2">Phân loại lượt hỏi</Typography>
+            <BarChart
+              height={250}
+              xAxis={[{ data: ["Student", "Admission"], scaleType: "band" }]}
+              series={[{
+                data: [data.total_chats.student, data.total_chats.admission],
+                label: "Số lượt hỏi"
+              }]}
+              margin={{ top: 10, bottom: 30 }}
+              slotProps={{ legend: undefined }}
             />
           </Paper>
         </Grid>
 
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={6}>
+          <Paper sx={{ p: 2 }}>
+            <Typography variant="subtitle2">Phân bổ Embedding</Typography>
+            <PieChart
+              height={250}
+              series={[{
+                data: [
+                  { value: data.embedding_distribution.admissions, label: "Admissions" },
+                  { value: data.embedding_distribution.students, label: "Students" },
+                  { value: data.embedding_distribution.pdfs, label: "PDFs" },
+                ],
+              }]}
+            />
+          </Paper>
+        </Grid>
+
+        <Grid item xs={12} md={12}>
           <Paper sx={{ p: 2 }}>
             <Typography variant="subtitle2">Người dùng mới theo ngày</Typography>
             <BarChart
