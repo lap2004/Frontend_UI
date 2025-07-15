@@ -8,7 +8,10 @@ import {
   Button,
   Box,
   CircularProgress,
+  Paper,
 } from "@mui/material";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
 export default function ChangePasswordPage() {
@@ -17,6 +20,9 @@ export default function ChangePasswordPage() {
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [currentPassword, setCurrentPassword] = useState("");
+
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const handleSubmit = async () => {
     if (!newPassword || newPassword.length < 6) {
@@ -56,6 +62,7 @@ export default function ChangePasswordPage() {
 
       toast.success("Mật khẩu đã được thay đổi thành công.");
       setSubmitted(true);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       toast.error(err.message || "Đã xảy ra lỗi.");
     } finally {
@@ -66,64 +73,100 @@ export default function ChangePasswordPage() {
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      
-      <Container maxWidth="sm" sx={{ mt: 8, textAlign: "center" }}>
-        <Typography variant="h5" mb={3}>
-          Đặt lại mật khẩu
-        </Typography>
-        {submitted ? (
-          <>
-            <Typography color="primary" mb={2}>
-              Mật khẩu của bạn đã được thay đổi. Bạn có thể đăng nhập lại.
+      <Box sx={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <Container maxWidth="xs" sx={{ textAlign: "center" }}>
+          <Paper elevation={3} sx={{ p: 4 }}>
+            <Typography variant="h5" mb={3}>
+              Đặt lại mật khẩu
             </Typography>
-            <Button
-              variant="outlined"
-              href="/user/home" // hoặc '/login' tùy cấu trúc route của bạn
-            >
-              Quay về trang chat
-            </Button>
-          </>
-        ) : (
-          <Box display="flex" flexDirection="column" gap={2}>
-            <TextField
-              type="password"
-              label="Mật khẩu hiện tại"
-              value={currentPassword}
-              onChange={(e) => setCurrentPassword(e.target.value)}
-              fullWidth
-              disabled={loading}
-            />
+            {submitted ? (
+              <>
+                <Typography color="primary" mb={2}>
+                  Mật khẩu của bạn đã được thay đổi. Bạn có thể đăng nhập lại.
+                </Typography>
+                <Button
+                  variant="outlined"
+                  href="/user/home" // hoặc '/login' tùy cấu trúc route của bạn
+                >
+                  Quay về trang chat
+                </Button>
+              </>
+            ) : (
+              <Box display="flex" flexDirection="column" gap={2}>
+                <TextField
+                  type="password"
+                  label="Mật khẩu hiện tại"
+                  value={currentPassword}
+                  onChange={(e) => setCurrentPassword(e.target.value)}
+                  fullWidth
+                  disabled={loading}
+                />
+                <Box sx={{ position: "relative" }}>
+                  <TextField
+                    type={showNewPassword ? "text" : "password"}
+                    label="Mật khẩu mới"
+                    value={newPassword}
+                    onChange={(e) => setNewPassword(e.target.value)}
+                    fullWidth
+                    disabled={loading}
+                  />
+                  <Button
+                    type="button"
+                    onClick={() => setShowNewPassword(!showNewPassword)}
+                    sx={{
+                      position: "absolute",
+                      right: 0,
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      minWidth: "40px",
+                      color: "grey.600",
 
-            <TextField
-              type="password"
-              label="Mật khẩu mới"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              fullWidth
-              disabled={loading}
-            />
+                    }}
+                    aria-label={showNewPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                  >
+                    {showNewPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                  </Button>
+                </Box>
 
-            <TextField
-              type="password"
-              label="Nhập lại mật khẩu"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              fullWidth
-              disabled={loading}
-            />
+                <Box sx={{ position: "relative" }}>
+                  <TextField
+                    type={showConfirmPassword ? "text" : "password"}
+                    label="Nhập lại mật khẩu"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    fullWidth
+                    disabled={loading}
+                  />
+                  <Button
+                      type="button"
+                      onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                      sx={{
+                        position: "absolute",
+                        right: 0,
+                        top: "50%",
+                        transform: "translateY(-50%)",
+                        minWidth: "40px",
+                        color: "grey.600",
+                      }}
+                      aria-label={showConfirmPassword ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                    >
+                      {showConfirmPassword ? <VisibilityOffIcon /> : <VisibilityIcon />}
+                    </Button>
+                </Box>
 
-            <Button
-              variant="contained"
-              onClick={handleSubmit}
-              disabled={loading}
-            >
-              {loading ? <CircularProgress size={20} /> : "Xác nhận đổi mật khẩu"}
-            </Button>
-          </Box>
-        )}
+                <Button
+                  variant="contained"
+                  onClick={handleSubmit}
+                  disabled={loading}
+                >
+                  {loading ? <CircularProgress size={20} /> : "Xác nhận đổi mật khẩu"}
+                </Button>
+              </Box>
+            )}
 
-      </Container>
-
+          </Paper>
+        </Container>
+      </Box>
     </Suspense>
   );
 }

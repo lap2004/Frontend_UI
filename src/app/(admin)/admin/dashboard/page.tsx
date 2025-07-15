@@ -107,6 +107,7 @@ export default function AdminDashboardPage() {
           <Paper sx={{ p: 2 }}>
             <Typography variant="subtitle2">Phân loại lượt hỏi</Typography>
             <BarChart
+              width={550}
               height={250}
               xAxis={[{ data: ["Student", "Admission"], scaleType: "band" }]}
               series={[{
@@ -123,7 +124,7 @@ export default function AdminDashboardPage() {
           <Paper sx={{ p: 2 }}>
             <Typography variant="subtitle2">Phân bổ Embedding</Typography>
             <PieChart
-              height={250}
+              height={280}
               series={[{
                 data: [
                   { value: data.embedding_distribution.admissions, label: "Admissions" },

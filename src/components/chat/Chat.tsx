@@ -13,7 +13,6 @@ import {
 } from "@mui/material";
 import { AnimatePresence, motion } from "framer-motion";
 import Cookies from "js-cookie";
-import Image from "next/image";
 import React, { useEffect, useRef, useState } from "react";
 import LoadingDots from "../LoadingDot";
 
@@ -97,7 +96,7 @@ export default function Chat() {
   return (
     <>
       <motion.button
-        className="bg-[#B02E35] rounded-full w-14 h-14 fixed bottom-5 right-5 md:z-[1403] z-[1401] flex items-center justify-center .fab-xs"
+        className="bg-[#B02E35] rounded-full lg:w-14 lg:h-14 w-12 h-12 fixed bottom-5 right-5 lg:z-[1403] z-[1199] flex items-center justify-center .fab-xs"
         onClick={() => setIsVisible((v) => !v)}
         whileTap={{ scale: 0.9 }}
         animate={{ y: [0, -10, 0] }}       

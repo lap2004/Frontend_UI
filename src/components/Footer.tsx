@@ -1,10 +1,11 @@
-import { Box, Container, Grid, Typography, Link, Stack } from "@mui/material";
 import { Email, Phone } from "@mui/icons-material";
+import { Box, Container, Grid, Link, Stack, Typography } from "@mui/material";
 import Image from "next/image";
 
 export default function Footer() {
   return (
     <Box
+      id="footer"
       sx={{
         backgroundColor: "#131F32",
         color: "white",
