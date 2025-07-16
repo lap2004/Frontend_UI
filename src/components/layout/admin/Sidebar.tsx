@@ -1,26 +1,28 @@
 "use client";
 
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import LogoutIcon from '@mui/icons-material/Logout';
+import PeopleIcon from '@mui/icons-material/People';
+import Cookies from "js-cookie";
+
+import { isLogin } from '@/src/lib/helper';
+import { removeAuthCookies } from '@/src/lib/helper/token';
+import { useProtectedProtected } from '@/src/services/hooks/hookAuth';
 import {
+    Box,
     Drawer,
     List,
     ListItem,
     ListItemIcon,
     ListItemText,
     Toolbar,
-    Box,
     Typography,
 } from '@mui/material';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import LogoutIcon from '@mui/icons-material/Logout';
-import PeopleIcon from '@mui/icons-material/People';
-import SettingsIcon from '@mui/icons-material/Settings';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import Image from 'next/image';
-import { useState } from 'react';
-import useStore from '../../store';
+import React, { useEffect, useState } from 'react';
 
 const drawerWidth = 240;
 
@@ -33,22 +35,45 @@ export default function Sidebar() {
     const pathname = usePathname();
     const router = useRouter();
 
-    const [user, setUser] = useState<any>(null);
-    const isLogin = useStore((state: any) => state.isLogin);
-    const setIsLogin = useStore((state: any) => state.setIsLogin);
-
-
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any
+    const [user, setUser] = useState<any | undefined>(undefined);
+    const { postProtectedProtected } = useProtectedProtected();
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [loggedIn, setLoggedIn] = useState(false);
 
     const handleLogout = async () => {
         try {
-            localStorage.removeItem("access_token");
+            removeAuthCookies()
             setUser(null);
-            setIsLogin(false)
-            router.push("/user/home");
+            router.push("/");
+
         } catch (err) {
-            console.error("Logout failed", err);
+            console.error("Logout error:", err);
         }
     };
+
+    const fetchUser = React.useCallback(async () => {
+        try {
+            const res = await postProtectedProtected({});
+            setUser(res);
+            if (res.role !== "admin") {
+                router.push("/");
+            }
+        } catch {
+            setUser(null);
+        }
+    }, [postProtectedProtected]);
+
+    useEffect(() => {
+        const token = Cookies.get("access_token");
+        if (token) {
+            fetchUser();
+        } else {
+            setUser(null);
+        }
+        setLoggedIn(isLogin());
+    }, [fetchUser]);
+
     return (
         <Drawer
             variant="permanent"
