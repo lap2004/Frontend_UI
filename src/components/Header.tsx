@@ -160,8 +160,6 @@ const Header = () => {
                 color="inherit"
                 sx={{
                   fontWeight: "light",
-                  // ':hover': { backgroundColor: "#FFA957"}
-
                 }}
               >
                 <Link href={user?.role === "admin" ? "/admin/dashboard" : "/user/home"} style={{ textDecoration: "none", color: "white" }}
@@ -174,13 +172,14 @@ const Header = () => {
 
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
               <Button
-                // onClick={scrollToContact}
                 sx={{
                   color: "white",
                   fontWeight: "light",
                 }}
               >
-                <Link href={"/user/home#footer"} style={{ textDecoration: "none", color: "white" }}>
+                <Link href={"/user/home#footer"} style={{ textDecoration: "none", color: "white" }}
+                className={` ${pathname === "/user/home#footer" ? "bg-[#AEB1B6] px-4 py-2 rounded-md" : ""}`}
+                >
                   Liên Hệ
                 </Link>
 
