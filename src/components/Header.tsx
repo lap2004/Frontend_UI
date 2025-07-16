@@ -27,12 +27,15 @@ import { motion } from "framer-motion";
 import Cookies from "js-cookie";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { isLogin } from '../lib/helper';
 import { removeAuthCookies } from '../lib/helper/token';
 import { useProtectedProtected } from '../services/hooks/hookAuth';
 
 const Header = () => {
+  const pathname = usePathname();
+
+
   //
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
@@ -98,12 +101,21 @@ const Header = () => {
 
   const menuItems = [
     { label: "Trang Chủ", href: user?.role === "admin" ? "/admin/dashboard" : "/user/home" },
-    { label: "Liên Hệ", href: "#footer" },
+    { label: "Liên Hệ", href: "/user/home#footer" },
 
     loggedIn //thay doi duong dan
       ? { label: "Chat Sinh Viên", href: "/tu-van" }
       : { label: "Chat Tuyển Sinh", href: "/tu-van" },
   ];
+
+
+  //scroll footer
+  const scrollToContact = () => {
+    const contactSection = document.getElementById('footer');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
 
   return (
     <>
@@ -146,22 +158,56 @@ const Header = () => {
 
           {/* —— DESKTOP MENU —— */}
           <Box sx={{ display: { xs: "none", md: "flex" }, alignItems: "center", gap: 2 }}>
-            {menuItems.map((item, idx) => (
-              <motion.div key={idx} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                <Button
-                  color="inherit"
-                  sx={{
-                    p: "10px 20px",
-                    fontWeight: "light",
-                    ":hover": { bgcolor: "#d62134", color: "white" },
-                  }}
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                color="inherit"
+                sx={{
+                  fontWeight: "light",
+                  // ':hover': { backgroundColor: "#FFA957"}
+
+                }}
+              >
+                <Link href={user?.role === "admin" ? "/admin/dashboard" : "/user/home"} style={{ textDecoration: "none", color: "white" }}
+                  className={` ${pathname === "/" || pathname === '/user/home' ? "bg-[#AEB1B6] px-4 py-2 rounded-md" : ""}`}
                 >
-                  <Link href={item.href} style={{ textDecoration: "none", color: "white" }}>
-                    {item.label}
-                  </Link>
-                </Button>
-              </motion.div>
-            ))}
+                  Trang Chủ
+                </Link>
+              </Button>
+            </motion.div>
+
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                onClick={scrollToContact}
+                sx={{
+                  color: "white",
+                  fontWeight: "light",
+                }}
+              >
+
+                Liên Hệ
+
+              </Button>
+            </motion.div>
+
+            <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
+              <Button
+                color="inherit"
+                sx={{
+                  // p: "10px 20px",
+                  fontWeight: "light",
+
+                }}
+
+              >
+                <Link href="/tu-van" style={{ textDecoration: "none", color: "white" }}
+                  className={` ${pathname === "/tu-van" ? "bg-[#AEB1B6] px-4 py-2 rounded-md" : ""}`}
+                >
+                  {loggedIn ? "Chat Sinh Viên" : "Chat Tuyển Sinh"}
+                </Link>
+              </Button>
+            </motion.div>
+
+
 
             {/* Đăng Nhập / Đăng Xuất */}
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
@@ -279,7 +325,7 @@ const Header = () => {
           {menuItems.map((item, idx) => (
             <ListItem key={idx} disablePadding onClick={() => setDrawerOpen(false)}>
               <ListItemButton component={Link} href={item.href}>
-                <ListItemText primary={item.label} />
+                <ListItemText primary={item.label} sx={{ paddingX: 2 }} />
               </ListItemButton>
             </ListItem>
           ))}

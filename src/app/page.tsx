@@ -6,9 +6,11 @@ import HomePage from "./(user)/user/home/page";
 export default function Home() {
   return (
     <>
-      <Header />
-      <HomePage />
-      <Footer />
+      
+        <Header />
+        <HomePage />
+        <Footer />
+      
     </>
 
   )

@@ -21,12 +21,15 @@
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
   background: var(--grey);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
-
 
 @keyframes bounce-y {
   0%, 100% { transform: translateY(0); }

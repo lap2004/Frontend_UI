@@ -8,6 +8,12 @@ import Link from "next/link";
 const MotionBox = motion(Box);
 
 export default function NewSection() {
+    // const scrollToContact = () => {
+    //     const contactSection = document.getElementById('footer');
+    //     if (contactSection) {
+    //         contactSection.scrollIntoView({ behavior: 'smooth' });
+    //     }
+    // };
     return (
         <Box
             component="section"
@@ -22,14 +28,14 @@ export default function NewSection() {
 
             {/* vid va backdrop */}
             <Box
-            
+
                 sx={{
                     position: "absolute",
                     inset: 0,
                     zIndex: -2,
                     pointerEvents: "none",
                     overflow: "hidden",
-                    
+
                 }}
             >
                 <video
@@ -43,7 +49,7 @@ export default function NewSection() {
                         height: "100%",
                         objectFit: "cover",
                     }}
-                    
+
                 />
 
                 <Box
@@ -102,7 +108,7 @@ export default function NewSection() {
                             <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
                                 <Button
                                     component={Link}
-                                    href="/tu-van" 
+                                    href="/tu-van"
                                     variant="contained"
                                     sx={{
                                         bgcolor: "#6263FF",
@@ -136,6 +142,28 @@ export default function NewSection() {
                                 >
                                     TÌM HIỂU VỀ CHÚNG TÔI
                                 </Button>
+
+                                {/* <Button
+                                    // component={Link}
+                                    onClick={scrollToContact}
+                                    variant="outlined"
+                                    sx={{
+                                        borderColor: "#6263FF",
+                                        color: "#6263FF",
+                                        px: 4,
+                                        py: 1.5,
+                                        borderRadius: 3,
+                                        fontWeight: 600,
+                                        textTransform: "none",
+                                        "&:hover": {
+                                            bgcolor: "rgba(98,99,255,.1)",
+                                            borderColor: "#4C50DE",
+                                        },
+                                    }}
+                                >
+                                    TEST
+                                </Button> */}
+
                             </Box>
                         </Box>
                     </MotionBox>
