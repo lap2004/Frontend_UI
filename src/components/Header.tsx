@@ -109,13 +109,7 @@ const Header = () => {
   ];
 
 
-  //scroll footer
-  const scrollToContact = () => {
-    const contactSection = document.getElementById('footer');
-    if (contactSection) {
-      contactSection.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
+
 
   return (
     <>
@@ -177,14 +171,15 @@ const Header = () => {
 
             <motion.div whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
               <Button
-                onClick={scrollToContact}
+                // onClick={scrollToContact}
                 sx={{
                   color: "white",
                   fontWeight: "light",
                 }}
               >
-
-                Liên Hệ
+                <Link href={"/user/home#footer"} style={{ textDecoration: "none", color: "white" }}>
+                  Liên Hệ
+                </Link>
 
               </Button>
             </motion.div>
