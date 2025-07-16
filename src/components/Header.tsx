@@ -1,24 +1,31 @@
 "use client";
 
+import ChatIcon from '@mui/icons-material/Chat';
+import ExpandLess from '@mui/icons-material/ExpandLess';
+import ExpandMore from '@mui/icons-material/ExpandMore';
+import HomeIcon from '@mui/icons-material/Home';
 import Logout from '@mui/icons-material/Logout';
 import MenuIcon from "@mui/icons-material/Menu";
+import PersonIcon from '@mui/icons-material/Person';
 import Settings from '@mui/icons-material/Settings';
+import LoginIcon from '@mui/icons-material/Login';
+import CallIcon from '@mui/icons-material/Call';
 import {
   AppBar,
   Box,
   Button,
   Drawer,
   IconButton,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemText,
   Toolbar
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
 import Avatar from '@mui/material/Avatar';
+import Collapse from '@mui/material/Collapse';
 import Divider from '@mui/material/Divider';
+import List from '@mui/material/List';
+import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
+import ListItemText from '@mui/material/ListItemText';
+import ListSubheader from '@mui/material/ListSubheader';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import { alpha } from "@mui/material/styles";
@@ -28,6 +35,7 @@ import Cookies from "js-cookie";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
 import { isLogin } from '../lib/helper';
 import { removeAuthCookies } from '../lib/helper/token';
 import { useProtectedProtected } from '../services/hooks/hookAuth';
@@ -36,7 +44,7 @@ const Header = () => {
   const pathname = usePathname();
 
 
-  //
+  // user desktop menu
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
@@ -46,6 +54,13 @@ const Header = () => {
     setAnchorEl(null);
   };
   //
+
+  // user mobile menu
+  const [openMobile, setOpenMobile] = React.useState(false);
+
+  const handleMobile = () => {
+    setOpenMobile(!openMobile);
+  };
 
 
   const router = useRouter();
@@ -98,18 +113,6 @@ const Header = () => {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [scrolled, fetchUser]);
-
-  const menuItems = [
-    { label: "Trang Chủ", href: user?.role === "admin" ? "/admin/dashboard" : "/user/home" },
-    { label: "Liên Hệ", href: "/user/home#footer" },
-
-    loggedIn //thay doi duong dan
-      ? { label: "Chat Sinh Viên", href: "/tu-van" }
-      : { label: "Chat Tuyển Sinh", href: "/tu-van" },
-  ];
-
-
-
 
   return (
     <>
@@ -316,31 +319,98 @@ const Header = () => {
         onClose={() => setDrawerOpen(false)}
         sx={{ display: { xs: "block", md: "none" } }}
       >
-        <List sx={{ width: 250 }}>
-          {menuItems.map((item, idx) => (
-            <ListItem key={idx} disablePadding onClick={() => setDrawerOpen(false)}>
-              <ListItemButton component={Link} href={item.href}>
-                <ListItemText primary={item.label} sx={{ paddingX: 2 }} />
-              </ListItemButton>
-            </ListItem>
-          ))}
+        <List
+          sx={{ width: '100%', minWidth: 280, bgcolor: 'background.paper' }}
+          className='p-2'
+          component="nav"
+          aria-labelledby="nested-list-subheader"
+          subheader={
+            <ListSubheader component="div" id="nested-list-subheader">
+              Menu
+            </ListSubheader>
+          }
+        >
 
-          <ListItem disablePadding>
-            {loggedIn ? (
-              <ListItemButton
-                onClick={() => {
-                  handleLogout();
-                  setDrawerOpen(false);
-                }}
-              >
-                <ListItemText primary="Đăng Xuất" sx={{ background: "#B52934", padding: 2, color: "white" }} />
+          <ListItemButton onClick={() => {
+            router.push("/")
+            setDrawerOpen(!drawerOpen);
+
+          }}>
+            <ListItemIcon>
+              <HomeIcon />
+            </ListItemIcon>
+            <ListItemText primary="Trang chủ" />
+          </ListItemButton>
+
+          <ListItemButton onClick={() => {
+            router.push("/tu-van")
+            setDrawerOpen(!drawerOpen);
+          }}>
+            <ListItemIcon>
+              <ChatIcon />
+            </ListItemIcon>
+            <ListItemText primary={loggedIn ? "Chat Sinh Viên" : "Chat Tuyển Sinh"} />
+          </ListItemButton>
+
+          <ListItemButton onClick={() => {
+            router.push("/user/home#footer")
+            setDrawerOpen(!drawerOpen);
+          }}>
+            <ListItemIcon>
+              <CallIcon />
+            </ListItemIcon>
+            <ListItemText primary="Liên Hệ" />
+          </ListItemButton>
+          
+
+          {loggedIn ?
+            <>
+              <ListItemButton onClick={handleMobile}>
+                <ListItemIcon>
+                  <PersonIcon />
+                </ListItemIcon>
+                <ListItemText primary="Thông tin cá nhân" />
+                {openMobile ? <ExpandLess /> : <ExpandMore />}
               </ListItemButton>
-            ) : (
-              <ListItemButton component={Link} href="/login" onClick={() => setDrawerOpen(false)}>
-                <ListItemText primary="Đăng Nhập Cho Sinh Viên" sx={{ background: "#4F87FF", padding: 2, color: "white" }} />
+
+              <Collapse in={openMobile} timeout="auto" unmountOnExit>
+                <List component="div" disablePadding>
+                  <ListItemButton sx={{ pl: 4 }} onClick={() => router.push("/change-password")}>
+                    <ListItemIcon>
+                      <Settings />
+                    </ListItemIcon>
+                    <ListItemText primary="Đổi mật khẩu" />
+                  </ListItemButton>
+
+                  <ListItemButton sx={{ pl: 4, borderRadius: "10px" }} onClick={() => {
+                    handleLogout();
+                    setDrawerOpen(false);
+                  }}>
+                    <ListItemIcon>
+                      <Logout />
+                    </ListItemIcon>
+                    <ListItemText primary="Đăng xuất" />
+                  </ListItemButton>
+
+                </List>
+              </Collapse>
+            </>
+            :
+            <>
+              <ListItemButton onClick={() => {
+                router.push("/login")
+                setDrawerOpen(!drawerOpen);
+
+              }}>
+                <ListItemIcon>
+                  <LoginIcon />
+                </ListItemIcon>
+                <ListItemText primary="Đăng nhập cho sinh viên" />
               </ListItemButton>
-            )}
-          </ListItem>
+            </>
+          }
+
+
         </List>
       </Drawer>
     </>

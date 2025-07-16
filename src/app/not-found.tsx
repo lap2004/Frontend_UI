@@ -8,12 +8,12 @@ export default function NotFound() {
     const router = useRouter();
     return (
         <Container>
-            <Box className="flex h-screen items-center justify-center">
+            <Box className="flex flex-col min-h-screen items-center justify-center">
                 <Icon icon='notFound' width={310} height={340} viewBoxWidth={310} viewBoxHeight={340} fill='none' />
-                <Box className="flex flex-col items-center justify-start gap-4" maxWidth={400}>
-                    <p className="text-black font-bold text-3xl">Oops, Something went wrong</p>
-                    <p className='text-xl'>Page not found</p>
-                    <span className='flex '>The link you click maybe broken or the page may have been removed or renamed.</span>
+                <Box className="flex flex-col items-center justify-center gap-4">
+                    <p className="text-black font-bold text-2xl">Oops, Something went wrong</p>
+                    <p className='text-md'>Page not found</p>
+                    <p>The link you click maybe broken or the page may have been removed or renamed.</p>
                     <MotionBox whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.95 }}>
                         <Button sx={{
                             backgroundColor: '#000',
