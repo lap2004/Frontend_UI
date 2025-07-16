@@ -9,11 +9,14 @@ import {
   Box,
   CircularProgress,
   Paper,
+  Divider,
 } from "@mui/material";
+import ArrowLeftIcon from '@mui/icons-material/ArrowLeft';
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import { toast } from "react-toastify";
 import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 export default function ChangePasswordPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -70,6 +73,7 @@ export default function ChangePasswordPage() {
     }
   };
 
+  const router = useRouter();
 
   return (
     <Suspense fallback={<div>Loading...</div>}>
@@ -161,6 +165,23 @@ export default function ChangePasswordPage() {
                 >
                   {loading ? <CircularProgress size={20} /> : "Xác nhận đổi mật khẩu"}
                 </Button>
+
+                <Divider></Divider>
+                <Typography
+                variant="body2"
+                align="center"
+                sx={{
+                  mt: 2,
+                  color: "primary.main",
+                  cursor: "pointer",
+                  transition: "all 0.3s ease",
+                  '&:hover': { color: '#1F2251' }
+                }}
+                onClick={() => router.push("/user/home")}
+              >
+                <ArrowLeftIcon fontSize="small" sx={{ verticalAlign: "middle" }} />
+                Trang chủ
+              </Typography>
               </Box>
             )}
 
